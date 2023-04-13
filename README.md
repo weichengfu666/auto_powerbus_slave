@@ -1,0 +1,2 @@
+# auto_powerbus_slave
+基于powerbus的自动组网系统_从机
