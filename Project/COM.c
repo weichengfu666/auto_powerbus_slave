@@ -161,7 +161,7 @@ void SendData2(uchar dat2)
 	busy2 = 1;
 	S2BUF = dat2;                //写数据到UART2数据寄存器
 }
-//发送变量
+////发送变量
 //void Sendnum(long num)
 //{
 //  unsigned char i=0,j=0;

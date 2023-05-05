@@ -53,6 +53,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 							{
 								if((IapReadByte(0x0000)==0)&&(IapReadByte(0x0001)==0))
 								{
+                                    SendData2(0x02);
 									SouXunXuLie_Time=1;
 								}
 							}
@@ -120,6 +121,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			FaSong_HuanCun[1]=IapReadByte(0x0000);
 			FaSong_HuanCun[2]=IapReadByte(0x0001);
 			ZhiLingFaSong(3);
+            SendData2(0x07);
 		break;//a5 ff ff 07 c2 41
 	}
 }
@@ -141,7 +143,7 @@ void XiaoGuo_ZhiXin(uint XiaoGouHao)
 }
 void ZongZhiXin(void)
 {	
-	if(SouXunXuLie_Time>5)
+	if(SouXunXuLie_Time>0)
 	{
 		SouXunXuLie_Time=0;
 		FaSong_HuanCun[0]=1;

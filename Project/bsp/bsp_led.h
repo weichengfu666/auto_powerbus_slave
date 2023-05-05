@@ -1,0 +1,84 @@
+#ifndef __BSP_LED_H__
+#define __BSP_LED_H__
+
+#include "main.h"
+
+#define LED_BREATH 1
+#define LED_FLASH  1
+
+//LED状态值
+#define LOW  0
+#define HIGH 100
+#define BREATH 101
+#define GRADCHANGE 102
+#define FLASH 103
+
+#define DEFAULT 0  //为默认值将不作修改，方便只填入需要修改的参数，不需要修改的参数填 DEFAULT
+
+typedef struct LED_Breath{
+                        u16 period_cnt;         //呼吸和渐变的周期计数标志
+                        u16 period_cntCmp;      //呼吸和渐变的周期计数比较标志
+                        u16 wave_index;         //用于PWM查表
+                        u16 periodFlash_cnt;    //频闪的周期计数标志
+                        u16 periodFlash_cntCmp; //频闪的周期计数比较标志
+                        u16 flash_level;        //用于翻转频闪电平
+                        u8  breath_enable;      //用于开关呼吸： ENABLE 为开， DISABLE 为关
+                        u8  gradChange_enable;  //用于开关渐变： ENABLE 为开， DISABLE 为关
+                        u8  flash_enable;       //用于开关频闪： ENABLE 为开， DISABLE 为关
+                        u8  pin_level;          //当关闭呼吸时，用于控制输出引脚高低电平，精度1%
+}LED_BreathTypeDef;
+
+typedef struct LED_Flash{
+                        u16 period_cnt;     //周期计数标志
+                        u16 period_cntCmp;  //周期计数比较标志
+                        u8  flash_enable;   //用于开关频闪： ENABLE 为开， DISABLE 为关
+                        u8  pin_level;      //当关闭频闪时，用于控制输出引脚状态
+}LED_FlashTypeDef;
+
+
+
+
+
+
+#if LED_BREATH
+
+extern u16 indexWaveBreath[];                     /* LED亮度等级 PWM表,指数曲线 ，此表使用工程目录下的python脚本index_wave.py生成*/
+extern const u16 POINT_NUM;                 //计算PWM表有多少个元素
+extern LED_BreathTypeDef LED_BreathxxArr[];//呼吸灯控制全局变量数组
+
+/* 呼吸灯函数 */  //输出口接led 负极, vcc接led 正极
+void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _period_cntCmp, u16 _periodFlash_cntCmp);//呼吸灯初始化函数,main函数调用
+void LED_breathSetState(u8 _PWMxx, u8 _breath_state);//led呼吸灯设置状态函数,main函数调用
+void LED_breathSetPeriod(u8 _PWMxx, u16 _period_cntCmp, u16 _periodFlash_cntCmp);//led呼吸灯设置周期函数,main函数调用
+void LED_breathTIMER4IntCallback0x( u8 _PWMxx );//led呼吸灯中断回调函数,直接配置,在定时器中断中调用
+void LED_breathGPIOConfig(u8 _PWMxx);//led呼吸灯端口GPIO配置函数,直接配置,在初始函数调用
+void LED_breathPWM15Config(u8 _PWMxx);//led呼吸灯端口PWM15配置函数,直接配置,在初始函数调用
+void LED_breathTIMER4Config(void);//led呼吸灯端口TIMER4配置函数,直接配置,在初始函数调用
+
+#endif
+
+
+
+
+#if LED_FLASH
+
+extern LED_FlashTypeDef LED_Flash20;        //P20口输出频闪灯
+extern LED_FlashTypeDef LED_Flash21;        //P21口输出频闪灯
+extern LED_FlashTypeDef LED_Flash22;        //P22口输出频闪灯
+extern LED_FlashTypeDef LED_Flash23;        //P23口输出频闪灯
+extern LED_FlashTypeDef LED_Flash24;        //P24口输出频闪灯
+extern LED_FlashTypeDef LED_Flash25;        //P25口输出频闪灯
+extern LED_FlashTypeDef LED_Flash26;        //P26口输出频闪灯
+extern LED_FlashTypeDef LED_Flash27;        //P27口输出频闪灯
+
+/* 频闪灯函数 */  //输出口接led 负极, vcc接led 正极
+void LED_flashInit(LED_FlashTypeDef * _LED_Flash2x, u16 _period_cntCmp, u8 _flash_enable);//频闪灯初始化函数,main函数调用
+void LED_flashSwitch(LED_FlashTypeDef * _LED_Flash2x, u8 _pin_level, u8 _flash_enable);//led频闪灯开关函数,main函数调用
+void LED_flashTIMER3IntCallback(void);//led频闪中断回调函数,直接配置,在定时器中断中调用
+void LED_flashGPIOConfig(void);//led频闪灯端口GPIO配置函数,直接配置,在初始函数调用
+void LED_flashTIMER3Config(void);//led频闪灯端口TIMER3配置函数,直接配置,在初始函数调用
+
+#endif
+
+#endif
+

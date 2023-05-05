@@ -1,7 +1,7 @@
 #include "main.h"
 uint Time=0,Time_i=0,HuXi_ZhanKongBi=0x400,cs_i=0,cs_j=0;
 uchar ShuJuFaSong_Flag=0,EEPROM_CS[30];
-code uchar XuLieHao[5]={0x52,0xAA,0x61,0x66,0xca};//11 52 44 55 a5 
+code uchar XuLieHao[5]={0x08,0x08,0x08,0x08,0x08};//11 52 44 55 a5 
 																									//cc ba 61
 code uchar EEPROM_ChuShi[100]=
 {0x00,0x00
@@ -20,8 +20,11 @@ extern char LiangDu_DangQian,LiangDu_ChuShi,LiangDu_JieShu;
 extern ulong Delay_Time[5],MuBiao_Time[5],JianBian_Time1,JianBian_Time2;
 extern uint GongNen_Addr_Shou[5],GongNen_Addr_Wei[5],XunHuan_Changdu,XunHuan_ZhiZhen,XunHuan_Addr;
 extern long LiangDu_HuanCun;
+
+
+
 void main()
-{		
+{  
 	Timer0Init();
 	InitUART();
 	IO_Init();
@@ -32,16 +35,19 @@ void main()
 	P54=0;
 	SendData(0x61);
 	SendData2(0x61);
+
+
 	for(;;)
 	{	
-	  WDT_CONTR=0x3d;
+        
+	    WDT_CONTR=0x3d;
 		FenJi_ShuJuChuLi2();
 		ZongZhiXin();
 		JianBian();
 		if(ShuJuFaSong_Flag>0)
-		{						
-			ShuJuFaSong_Flag=0;	
-		}  
+		{
+			ShuJuFaSong_Flag=0;
+		}
 	}
 } 
 

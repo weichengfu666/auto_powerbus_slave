@@ -1,0 +1,1 @@
+"bsp\bsp_timer.c" LARGE OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(.\driver;.\bsp) DEBUG PRINT(.\bsp_timer.lst) OBJECT(bsp_timer.obj)

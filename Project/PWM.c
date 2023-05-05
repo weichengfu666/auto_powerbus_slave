@@ -33,7 +33,7 @@ void PWM_ShuChu(uint PWM_CS)//0~0x0400
 		CCAPM2 = 0;
 		P54=1;
 	}else{
-		CCAPM2 = 0x42;
+		CCAPM2 = 0x42;//1100 1101
 		PCA_PWM2=(PCA_PWM2&0xcd)|(((0x400-PWM_ZhanKongBi)>>4)&0x30);
 		CCAP2H=(0x400-PWM_ZhanKongBi)&0xff;
 	}
