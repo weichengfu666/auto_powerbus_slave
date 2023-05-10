@@ -6,9 +6,10 @@ uint GongNen_Addr_Shou[5],GongNen_Addr_Wei[5],XunHuan_Changdu=0,XunHuan_ZhiZhen=
 char LiangDu_ChuShi=0,LiangDu_JieShu=0,LiangDu_DangQian=0;
 long LiangDu_HuanCun=0;
 uchar BianHao_QingChu[2],SouXunXuLie_Time=0,BiaoHaoFuZhi_Time=0;
+uint Time=0,Time_i=0;
+code uchar XuLieHao[5]={0x01,0x02,0x03,0x04,0x05};
 
-extern uchar ZhuJiJieShou_HuanCun[3][20],FaSong_HuanCun[20];
-extern code uchar XuLieHao[5];
+
 code uint LiangDuDuiZhao[101]={0,
 	1,2,2,2,2,3,3,3,3,3,
 	4,4,4,4,5,5,5,6,6,6,

@@ -2,7 +2,7 @@
 #include "main.h"
 
 
-#if LED_BREATH  //100*2 + 100*2 + 2 + 24*15 = 760 字节
+#if LED_BREATH  //100*2 + 100*2 + 2 + 24*22（528） = 930 字节
 
 /* LED亮度等级 PWM表,指数曲线 ，此表使用工程目录下的python脚本index_wave.py生成*/
 u16 indexWaveBreath[100] = {
@@ -32,7 +32,7 @@ u16 indexWaveGradChange[100] = {
 //计算PWM表有多少个元素,100个元素
 const u16 POINT_NUM = sizeof(indexWaveBreath)/sizeof(indexWaveBreath[0]);
 //呼吸灯控制全局变量
-LED_BreathTypeDef LED_BreathxxArr[24] = {0};
+LED_BreathTypeDef LED_BreathxxArr[24] = {0};    //PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
 
 /*
 *********************************************************************************************************
@@ -89,37 +89,51 @@ void LED_breathTIMER4Config(void)
 *********************************************************************************************************
 *	函 数 名: LED_breathInit
 *	功能说明: led呼吸灯初始化函数
-*	形    参: _PWMxx,呼吸灯引脚结构体指针,取值：  PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
-*             _breath_state,呼吸的状态,取值： LOW, HIGH, BREATH, GRADCHANGE, FLASH (低电平，高电平，呼吸，渐变，频闪）
-*             _period_cntCmp,呼吸和渐变周期计数比较值,控制呼吸快慢,建议取值： 100~5000  ms
-*             _periodFlash_cntCmp，频闪周期计数比较值，控制频闪快慢，建议取值： 30~100 ms
+*	形    参: _PWMxx 呼吸灯引脚结构体指针,固定取值范围： （ PWM00~PWM07, PWM10~PWM17, PWM20~PWM27 ）
+*             _breath_state 设置呼吸的灯状态为 高电平，低电平，亮度1~99，呼吸 ，渐变，频闪，固定取值范围：（ HIGH ， LOW ，1~99 ， BREATH ， GRADCHANGE ， FLASH ）
+*             _periodBreath_cntCmp 呼吸周期计数比较值,控制呼吸快慢,建议取值： （ 100~5000  ms ）
+*             _periodGradChange_cntCmp  渐变周期计数比较值,控制渐变快慢,建议取值： （ 100~5000  ms ）
+*             _periodFlash_cntCmp  频闪周期计数比较值，控制频闪快慢，建议取值：（ 30~100 ms ）
+*             _waveGradChange_start  渐变PWM起始亮度，固定取值范围 （1~100）
+*             _waveGradChange_end  渐变PWM结束亮度，固定取值范围（1~100）
 *	返 回 值: void
 *********************************************************************************************************
 */
-void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _period_cntCmp, u16 _periodFlash_cntCmp)
+void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreath_cntCmp, u16 _periodGradChange_cntCmp, u16 _periodFlash_cntCmp, u8 _waveGradChange_start, u8 _waveGradChange_end)
 {
     LED_BreathTypeDef* _LED_Breathxx = &LED_BreathxxArr[_PWMxx];
-    LED_breathGPIOConfig(_PWMxx);                       //led呼吸灯端口GPIO配置函数
-    LED_breathPWM15Config(_PWMxx);                      //led呼吸灯端口PWM15配置函数
-    LED_breathTIMER4Config();                           //led呼吸灯端口TIMER4配置函数
-    _LED_Breathxx->period_cnt       = 0;                //固定从0开始计数
-    _LED_Breathxx->periodFlash_cnt  = 0;                //固定从0开始计数
-    _LED_Breathxx->wave_index       = 0;                //固定起始由灭到亮    
-    LED_breathSetPeriod(_PWMxx, _period_cntCmp, _periodFlash_cntCmp); //设置周期计数比较值
+    
+    _LED_Breathxx->periodBreath_cnt = 0;             //重置呼吸周期计数标志
+    _LED_Breathxx->periodGradChange_cnt = 0;    //重置渐变周期计数标志
+    _LED_Breathxx->periodFlash_cnt = 0;               //重置频闪周期计数标志
+    _LED_Breathxx->waveBreath_index = 0;           //重置呼吸PWM表指针
+    _LED_Breathxx->waveGradChange_index = _waveGradChange_start - 1;//重置渐变PWM表指针    
+
+    LED_breathGPIOConfig(_PWMxx);                    //led呼吸灯端口GPIO配置函数
+    LED_breathPWM15Config(_PWMxx);                //led呼吸灯端口PWM15配置函数
+    LED_breathTIMER4Config();                             //led呼吸灯端口TIMER4配置函数
+    LED_breathSetPeriod(_PWMxx, _periodBreath_cntCmp, _periodGradChange_cntCmp, _periodFlash_cntCmp, _waveGradChange_start, _waveGradChange_end); //设置周期计数比较值
     LED_breathSetState(_PWMxx, _breath_state);   //设置状态
 }
 /*
 *********************************************************************************************************
 *	函 数 名: LED_breathSetState
 *	功能说明: led呼吸设置状态函数
-*	形    参: _PWMxx,呼吸灯引脚结构体指针,取值：  PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
-*             _breath_state,设置呼吸的灯状态为高电平，低电平，呼吸 ，取值：（ HIGH ， LOW ， BREATH ）
+*	形    参: _PWMxx  呼吸灯引脚结构体指针,取值：  PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
+*             _breath_state  设置呼吸的灯状态为 高电平，低电平，亮度1~99，呼吸 ，渐变，频闪，取值：（ HIGH ， LOW ，1~99 ， BREATH ， GRADCHANGE ， FLASH ）
 *	返 回 值: void
 *********************************************************************************************************
 */
 void LED_breathSetState(u8 _PWMxx, u8 _breath_state)
 {
     LED_BreathTypeDef* _LED_Breathxx = &LED_BreathxxArr[_PWMxx];
+    
+    _LED_Breathxx->periodBreath_cnt = 0;             //重置呼吸周期计数标志
+    _LED_Breathxx->periodGradChange_cnt = 0;    //重置渐变周期计数标志
+    _LED_Breathxx->periodFlash_cnt = 0;               //重置频闪周期计数标志
+    _LED_Breathxx->waveBreath_index = 0;           //重置呼吸PWM表指针
+    _LED_Breathxx->waveGradChange_index = _LED_Breathxx->waveGradChange_start;//重置渐变PWM表指针
+    
     if( _breath_state >= LOW && _breath_state <= HIGH )
     {
         _LED_Breathxx->breath_enable = DISABLE;//设置呼吸的开关： ENABLE 开，DISABLE 关
@@ -152,21 +166,44 @@ void LED_breathSetState(u8 _PWMxx, u8 _breath_state)
 *	函 数 名: LED_breathSetPeriod
 *	功能说明: led呼吸设置周期函数
 *	形    参: _PWMxx,呼吸灯引脚结构体指针,取值： PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
-*             _period_cntCmp,呼吸灯周期计数比较值,控制呼吸快慢,建议取值： 100~5000  ms 
-*             _periodFlash_cntCmp,频闪周期计数比较值，控制频闪快慢，建议取值： 30~1000 ms
+*             _periodBreath_cntCmp 呼吸周期计数比较值,控制呼吸快慢,建议取值： （ 100~5000  ms ）
+*             _periodGradChange_cntCmp  渐变周期计数比较值,控制渐变快慢,建议取值： （ 100~5000  ms ）
+*             _periodFlash_cntCmp  频闪周期计数比较值，控制频闪快慢，建议取值：（ 30~100 ms ）
+*             _waveGradChange_start  渐变PWM起始亮度，固定取值范围 （1~100）
+*             _waveGradChange_end  渐变PWM结束亮度，固定取值范围（1~100）
 *	返 回 值: void
 *********************************************************************************************************
 */
-void LED_breathSetPeriod(u8 _PWMxx, u16 _period_cntCmp, u16 _periodFlash_cntCmp)
+void LED_breathSetPeriod(u8 _PWMxx, u16 _periodBreath_cntCmp, u16 _periodGradChange_cntCmp, u16 _periodFlash_cntCmp, u8 _waveGradChange_start, u8 _waveGradChange_end)
 {
     LED_BreathTypeDef* _LED_Breathxx = &LED_BreathxxArr[_PWMxx];
-    if( _period_cntCmp != DEFAULT ) //设置呼吸和渐变周期计数比较值
+    
+    if(_waveGradChange_start != DEFAULT)
     {
-        if(_period_cntCmp <= 100)
+        _LED_Breathxx->waveGradChange_start = _waveGradChange_start - 1;
+    }
+    
+    if(_waveGradChange_end != DEFAULT)
+    {
+        _LED_Breathxx->waveGradChange_end = _waveGradChange_end;
+    }
+    
+    if( _periodBreath_cntCmp != DEFAULT ) //设置呼吸周期计数比较值
+    {
+        if(_periodBreath_cntCmp <= 100)
         {
-            _period_cntCmp = 100;
+            _periodBreath_cntCmp = 100;
         }
-        _LED_Breathxx->period_cntCmp = _period_cntCmp / 100;      
+        _LED_Breathxx->periodBreath_cntCmp = _periodBreath_cntCmp / 100;      
+    }
+    
+    if( _periodGradChange_cntCmp != DEFAULT ) //设置渐变周期计数比较值
+    {
+        if(_periodGradChange_cntCmp <= 100)
+        {
+            _periodGradChange_cntCmp = 100;
+        }
+        _LED_Breathxx->periodGradChange_cntCmp = _periodGradChange_cntCmp / ( _LED_Breathxx->waveGradChange_end - _LED_Breathxx->waveGradChange_start );      
     }
 
     if( _periodFlash_cntCmp != DEFAULT ) //设置频闪周期计数比较值
@@ -189,28 +226,38 @@ void LED_breathSetPeriod(u8 _PWMxx, u16 _period_cntCmp, u16 _periodFlash_cntCmp)
 void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
 {
     LED_BreathTypeDef* _LED_Breathxx = &LED_BreathxxArr[_PWMxx];
-    if( _LED_Breathxx->breath_enable == ENABLE || _LED_Breathxx->gradChange_enable == ENABLE )//控制呼吸和渐变
+    if( _LED_Breathxx->breath_enable == ENABLE )//控制呼吸
     {
-        _LED_Breathxx->period_cnt++;
+        _LED_Breathxx->periodBreath_cnt++;
         PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
-        if( _LED_Breathxx->breath_enable == ENABLE)
-        {
-            PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->wave_index]);	    //根据PWM表修改定时器的比较寄存器值
-        }
-        else if( _LED_Breathxx->gradChange_enable == ENABLE )
-        {
-            PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->wave_index]);	//根据PWM表修改定时器的比较寄存器值
-        }
+        PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveBreath_index]);	    //根据PWM表修改定时器的比较寄存器值
         //每个PWM表中的每个元素使用 period_cntCmp 次
-        if(_LED_Breathxx->period_cnt >= _LED_Breathxx->period_cntCmp)				 				
+        if(_LED_Breathxx->periodBreath_cnt >= _LED_Breathxx->periodBreath_cntCmp)				 				
         {				
-            _LED_Breathxx->wave_index++;												//标志PWM表指向下一个元素
+            _LED_Breathxx->waveBreath_index++;												//标志PWM表指向下一个元素
             //若PWM表已到达结尾，重新指向表头
-            if( _LED_Breathxx->wave_index >=  POINT_NUM)			
+            if( _LED_Breathxx->waveBreath_index >=  POINT_NUM)			
             {
-                _LED_Breathxx->wave_index=0;								
+                _LED_Breathxx->waveBreath_index=0;								
             }
-            _LED_Breathxx->period_cnt=0;											//重置呼吸和渐变周期计数标志
+            _LED_Breathxx->periodBreath_cnt=0;											//重置呼吸和渐变周期计数标志
+        }   
+    }
+    else if( _LED_Breathxx->gradChange_enable == ENABLE )//控制渐变
+    {
+        _LED_Breathxx->periodGradChange_cnt++;
+        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
+        PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveGradChange_index]);	//根据PWM表修改定时器的比较寄存器值
+        //每个PWM表中的每个元素使用 period_cntCmp 次
+        if(_LED_Breathxx->periodGradChange_cnt >= _LED_Breathxx->periodGradChange_cntCmp)				 				
+        {				
+            _LED_Breathxx->waveGradChange_index++;												//标志PWM表指向下一个元素
+            //若PWM表已到达结尾，重新指向表头
+            if( _LED_Breathxx->waveGradChange_index >=  _LED_Breathxx->waveGradChange_end )			
+            {
+                _LED_Breathxx->waveGradChange_index = _LED_Breathxx->waveGradChange_start;								
+            }
+            _LED_Breathxx->periodGradChange_cnt=0;											//重置呼吸和渐变周期计数标志
         }   
     }
     else if( _LED_Breathxx->flash_enable == ENABLE )//控制频闪
@@ -220,22 +267,19 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
         {   
             if( _LED_Breathxx->flash_level == LOW )
             {
-                PWMLevelSet(_PWMxx,DISABLE,ENABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
                 _LED_Breathxx->flash_level = HIGH;
+                PWMLevelSet(_PWMxx,DISABLE,ENABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
             }
             else if( _LED_Breathxx->flash_level == HIGH)
             {
-                PWMLevelSet(_PWMxx,ENABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
                 _LED_Breathxx->flash_level = LOW;
+                PWMLevelSet(_PWMxx,ENABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
             }
             _LED_Breathxx->periodFlash_cnt = 0;       //重置频闪周期计数标志
         }
     }
     else//控制引脚高低电平
     {
-        _LED_Breathxx->period_cnt = 0;            //重置呼吸和渐变周期计数标志
-        _LED_Breathxx->periodFlash_cnt = 0;       //重置频闪周期计数标志
-        _LED_Breathxx->wave_index = 0;            //重置PWM表指针
         PWMLevelSet(_PWMxx,DISABLE,DISABLE);	  //PWM_ID, 强制输出低电平, 强制输出高电平
         if(_LED_Breathxx->pin_level > LOW && _LED_Breathxx->pin_level < HIGH)
         {
@@ -243,11 +287,11 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
         }
         else if(_LED_Breathxx->pin_level == LOW)
         {
-            PWM15Duty(_PWMxx, 0x401, 0x0);	    //PWM周期, 占空比设置.
+            PWM15Duty(_PWMxx, 0x0, 0x401);	    //PWM周期, 占空比设置.
         }
         else if(_LED_Breathxx->pin_level == HIGH)
         {
-            PWM15Duty(_PWMxx,0x0,0x401);	    //PWM周期, 占空比设置.
+            PWM15Duty(_PWMxx, 0x401, 0x0);	    //PWM周期, 占空比设置.
         }
     }
 }

@@ -3,29 +3,38 @@
 
 #include "main.h"
 
+//呼吸灯选择编译开关：1为开，0为关
 #define LED_BREATH 1
-#define LED_FLASH  1
+#define LED_FLASH  0
 
-//LED状态值
+//LED状态值：低电平，高电平，呼吸，渐变，频闪
 #define LOW  0
-#define HIGH 100
-#define BREATH 101
-#define GRADCHANGE 102
-#define FLASH 103
+#define HIGH 101
+#define BREATH 102
+#define GRADCHANGE 103
+#define FLASH 104
 
 #define DEFAULT 0  //为默认值将不作修改，方便只填入需要修改的参数，不需要修改的参数填 DEFAULT
 
 typedef struct LED_Breath{
-                        u16 period_cnt;         //呼吸和渐变的周期计数标志
-                        u16 period_cntCmp;      //呼吸和渐变的周期计数比较标志
-                        u16 wave_index;         //用于PWM查表
-                        u16 periodFlash_cnt;    //频闪的周期计数标志
-                        u16 periodFlash_cntCmp; //频闪的周期计数比较标志
-                        u16 flash_level;        //用于翻转频闪电平
-                        u8  breath_enable;      //用于开关呼吸： ENABLE 为开， DISABLE 为关
-                        u8  gradChange_enable;  //用于开关渐变： ENABLE 为开， DISABLE 为关
-                        u8  flash_enable;       //用于开关频闪： ENABLE 为开， DISABLE 为关
-                        u8  pin_level;          //当关闭呼吸时，用于控制输出引脚高低电平，精度1%
+                        u16 periodBreath_cnt;                   //呼吸的周期计数标志
+                        u16 periodBreath_cntCmp;            //呼吸的周期计数比较标志
+                        u8 waveBreath_index;                   //呼吸PWM查表，周期性的由灭到亮再到灭
+                        u8  breath_enable;                        //呼吸开关： ENABLE 为开， DISABLE 为关
+    
+                        u16 periodGradChange_cnt;          //渐变的周期计数标志
+                        u16 periodGradChange_cntCmp;   //渐变的周期计数比较标志
+                        u8 waveGradChange_index;           //渐变PWM查表，周期性的从起始亮度到结束亮度，再从起始亮度到结束亮度
+                        u8 waveGradChange_start;            //渐变PWM起始亮度，0~50：由最暗到最亮，51~100：由最亮到最暗，可以随意组合，比如：start = 25,end = 75,从起始亮度（25）到最亮（50）到结束亮度（75）（注意：25和75是对称关系，所以亮度一样），周期性的再从起始亮度（25）到结束亮度（75）
+                        u8 waveGradChange_end;             //渐变PWM结束亮度，
+                        u8  gradChange_enable;                //渐变开关： ENABLE 为开， DISABLE 为关
+    
+                        u16 periodFlash_cnt;                      //频闪的周期计数标志
+                        u16 periodFlash_cntCmp;               //频闪的周期计数比较标志
+                        u16 flash_level;                               //用于翻转频闪电平
+                        u8  flash_enable;                            //频闪开关： ENABLE 为开， DISABLE 为关
+
+                        u8  pin_level;                                  //呼吸开关，用于控制输出引脚高低电平，精度1%，取值：LOW,1~99,HIGH
 }LED_BreathTypeDef;
 
 typedef struct LED_Flash{
@@ -47,9 +56,9 @@ extern const u16 POINT_NUM;                 //计算PWM表有多少个元素
 extern LED_BreathTypeDef LED_BreathxxArr[];//呼吸灯控制全局变量数组
 
 /* 呼吸灯函数 */  //输出口接led 负极, vcc接led 正极
-void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _period_cntCmp, u16 _periodFlash_cntCmp);//呼吸灯初始化函数,main函数调用
+void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreath_cntCmp, u16 _periodGradChange_cntCmp, u16 _periodFlash_cntCmp, u8 _waveGradChange_start, u8 _waveGradChange_end);//呼吸灯初始化函数,main函数调用
 void LED_breathSetState(u8 _PWMxx, u8 _breath_state);//led呼吸灯设置状态函数,main函数调用
-void LED_breathSetPeriod(u8 _PWMxx, u16 _period_cntCmp, u16 _periodFlash_cntCmp);//led呼吸灯设置周期函数,main函数调用
+void LED_breathSetPeriod(u8 _PWMxx, u16 _periodBreath_cntCmp, u16 _periodGradChange_cntCmp, u16 _periodFlash_cntCmp, u8 _waveGradChange_start, u8 _waveGradChange_end);//led呼吸灯设置周期和渐变亮度函数,main函数调用
 void LED_breathTIMER4IntCallback0x( u8 _PWMxx );//led呼吸灯中断回调函数,直接配置,在定时器中断中调用
 void LED_breathGPIOConfig(u8 _PWMxx);//led呼吸灯端口GPIO配置函数,直接配置,在初始函数调用
 void LED_breathPWM15Config(u8 _PWMxx);//led呼吸灯端口PWM15配置函数,直接配置,在初始函数调用

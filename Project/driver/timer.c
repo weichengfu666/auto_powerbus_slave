@@ -20,10 +20,61 @@
 #include "main.h"
 
 ///********************* Timer0中断函数************************/
-//void timer0_int (void) interrupt TIMER0_VECTOR
-//{
-
-//}
+void timer0_int (void) interrupt TIMER0_VECTOR
+{
+	Time++;	
+	for(Time_i=0;Time_i<5;Time_i++)
+	{
+		if(Delay_Time[Time_i]>0)
+		{
+			Delay_Time[Time_i]++;
+		}
+	}
+	if(JianBian_Time2>0)
+	{
+		JianBian_Time2--;
+	}else if(JianBian_Time1>0)
+	{
+		JianBian_Time1=0;
+		LiangDu_DangQian=LiangDu_JieShu;
+		LiangDu_ChuShi=0;
+		LiangDu_JieShu=0;
+	}else if(XunHuan_Changdu>0)
+	{	
+		if(XunHuan_ZhiZhen<(XunHuan_Changdu-1))
+		{
+			XunHuan_ZhiZhen++;
+		}else{
+			XunHuan_ZhiZhen=0;
+		}
+		JianBian_Time1=IapReadByte(XunHuan_Addr+1+XunHuan_ZhiZhen*4)*0x10000+IapReadByte(XunHuan_Addr+2+XunHuan_ZhiZhen*4)*0x100+IapReadByte(XunHuan_Addr+3+XunHuan_ZhiZhen*4);
+		JianBian_Time2=JianBian_Time1;
+		LiangDu_ChuShi=IapReadByte(XunHuan_Addr+XunHuan_ZhiZhen*4);
+		LiangDu_DangQian=LiangDu_ChuShi;
+		if(XunHuan_ZhiZhen<(XunHuan_Changdu-1))
+			LiangDu_JieShu=IapReadByte(XunHuan_Addr+4+XunHuan_ZhiZhen*4);
+		else
+			LiangDu_JieShu=IapReadByte(XunHuan_Addr);
+		if(JianBian_Time1==0)
+			LiangDu_DangQian=LiangDu_JieShu;
+	}
+	if(SouXunXuLie_Time>0)
+	{
+		SouXunXuLie_Time++;
+	}
+	if(BiaoHaoFuZhi_Time>0)
+	{
+		BiaoHaoFuZhi_Time++;
+	}
+	if(Time%500==0)
+	{
+		//ShuJuFaSong_Flag=1;
+	} 	
+	if(Time==30000)
+	{
+		Time=0;
+	}
+}
 
 /********************* Timer1中断函数************************/
 void timer1_int (void) interrupt TIMER1_VECTOR

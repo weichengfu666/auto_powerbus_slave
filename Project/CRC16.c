@@ -1,13 +1,14 @@
 #include "main.h"
 
 uchar CRC_L=0,CRC_H=0;
-unsigned long CRC_wcrc=0XFFFF;	//预置16位crc寄存器，初值全部为1 
-unsigned char CRC_temp;					//定义中间变量 
-int CRC_i=0,CRC_j=0;								//定义计数 
-uchar CRC_HuanCun[2];
 
 void crc16(unsigned char *ptr,unsigned int len,uchar CRC_GuangBo) 
 { 
+    int CRC_i=0,CRC_j=0;								//定义计数 
+    unsigned long CRC_wcrc=0XFFFF;	//预置16位crc寄存器，初值全部为1 
+    unsigned char CRC_temp;					//定义中间变量 
+    uchar CRC_HuanCun[2];
+    
 	CRC_wcrc=0XFFFF;
 	CRC_i=0;
 	if(CRC_GuangBo==0)

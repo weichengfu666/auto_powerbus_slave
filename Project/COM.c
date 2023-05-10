@@ -1,13 +1,13 @@
 #include "main.h"
 
 uchar busy_flag,busy2_flag;
-uchar RX_i;
-uchar JiHuo[2]={0,0},ZhuJiJieShou_HuanCun[3][20],FenJi_ShuJuChuLi_i;
-uchar ZhuJiJieShou_HuanCun_i[3]={0,0,0},FenJi_ShuJuChuLi2_i,FenJi_ShuJuChuLi2_j;
-uchar FaSong_HuanCun[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},ZhiLingFaSong_i=0,GuangBo_Flag[3]={0,0,0};
+
+uchar JiHuo[2]={0,0},ZhuJiJieShou_HuanCun[3][20];
+uchar ZhuJiJieShou_HuanCun_i[3]={0,0,0};
+uchar FaSong_HuanCun[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},GuangBo_Flag[3]={0,0,0};
 bit busy,busy2;	 
 code uchar ZhiLin_ChangDu[10]={11,13,6,6,8,8,6,0,0,0};
-extern uchar CRC_L,CRC_H;
+
 /*----------------------------
     UART1初始化
 -----------------------------*/
@@ -51,6 +51,7 @@ void Uart() interrupt 4 using 1
 
 void FenJi_ShuJuChuLi(uchar FenJi_Data)
 {
+    uchar FenJi_ShuJuChuLi_i;
 	for(FenJi_ShuJuChuLi_i=0;FenJi_ShuJuChuLi_i<3;FenJi_ShuJuChuLi_i++)
 	{
 		if(ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi_i]>=1)
@@ -63,6 +64,7 @@ void FenJi_ShuJuChuLi(uchar FenJi_Data)
 
 void FenJi_ShuJuChuLi2(void)
 {
+    uchar FenJi_ShuJuChuLi2_i,FenJi_ShuJuChuLi2_j;
 	for(FenJi_ShuJuChuLi2_i=0;FenJi_ShuJuChuLi2_i<3;FenJi_ShuJuChuLi2_i++)
 	{
 		if((ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]==0)&&(ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi2_i]>1))
@@ -94,6 +96,7 @@ void FenJi_ShuJuChuLi2(void)
 }
 void ZhiLingFaSong(uchar ChangDu)
 {
+    uchar ZhiLingFaSong_i;
 	SendData2(0xa5);
 	for(ZhiLingFaSong_i=0;ZhiLingFaSong_i<ChangDu;ZhiLingFaSong_i++)
 	{
@@ -120,6 +123,7 @@ UART2 中断服务程序
 -----------------------------*/
 void Uart2() interrupt 8 using 1
 {
+    uchar RX_i;
 	if (S2CON&S2RI)
 	{
 		S2CON=S2CON&0xfe;        //清除S2RI位 
