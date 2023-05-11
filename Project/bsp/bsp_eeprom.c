@@ -60,7 +60,7 @@ void EEPROM_Write_Str(WORD addr,BYTE dat[],WORD dat_Len)
 		IapEraseSector(addr);
 	for(EEPROM_Write_i=0;EEPROM_Write_i<dat_Len;EEPROM_Write_i++)
 	{
-	  WDT_CONTR=0x3d;
+//	  WDT_CONTR=0x3d;//¿´ÃÅ¹·
 		IapProgramByte(addr+EEPROM_Write_i,dat[EEPROM_Write_i]);		
 	}
 }
