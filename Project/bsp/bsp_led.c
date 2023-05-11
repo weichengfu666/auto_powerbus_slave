@@ -46,9 +46,7 @@ void LED_breathGPIOConfig(u8 _PWMxx)
 	GPIO_InitTypeDef	GPIO_InitStructure;		//结构定义
 	GPIO_InitStructure.Pin  = 0x01 << ( _PWMxx % 8 );		//指定要初始化的IO,
 	GPIO_InitStructure.Mode = GPIO_OUT_PP;		//指定IO的输入或输出方式,GPIO_PullUp,GPIO_HighZ,GPIO_OUT_OD,GPIO_OUT_PP
-	GPIO_Inilize(GPIO_P0,&GPIO_InitStructure);	//初始化P0
-    GPIO_Inilize(GPIO_P1,&GPIO_InitStructure);	//初始化P1
-    GPIO_Inilize(GPIO_P2,&GPIO_InitStructure);	//初始化P2
+	GPIO_Inilize(_PWMxx/8,&GPIO_InitStructure);	//初始化IO口
 }
 /*
 *********************************************************************************************************
@@ -65,7 +63,7 @@ void LED_breathPWM15Config(u8 _PWMxx)
 	PWM15_InitStructure.PWM_Clock_Sel = PWMn_CLK_SYS;		//时钟源选择,  PWMn_CLK_SYS, PWMn_CLK_TM2
 	PWM15_InitStructure.PWM_Clock_PS  = 0;				//系统时钟分频参数(PS+1分频),  0~15
 	PWM15_InitStructure.PWM_Counter   = ENABLE;		//计数器使能,  ENABLE, DISABLE
-	PWM15_Init(_PWMxx,&PWM15_InitStructure);  //设置P0端口为PWM呼吸灯
+	PWM15_Init(_PWMxx/8,&PWM15_InitStructure);  //PWM初始化（已修复bug）
     PWMChannelCtrl(_PWMxx,ENABLE,0,DISABLE,DISABLE,DISABLE);	//PWM_ID, 输出使能, 初始电平, PWM中断, 第二个触发点中断, 第一触发点中断
 }
 /*
