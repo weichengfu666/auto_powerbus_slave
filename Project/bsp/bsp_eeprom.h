@@ -9,8 +9,6 @@ sfr IAP_CMD         = 0xC5;          //IAP命令寄存器
 sfr IAP_TRIG        = 0xC6;          //IAP命令触发寄存器 
 sfr IAP_TRIG        = 0xC6;          //IAP命令触发寄存器*/
 
-typedef unsigned int WORD;
-typedef unsigned char BYTE;
 
 //#define  IAP_OFFSET 0x2000  //STC8G1K08
 #define  IAP_OFFSET 0xF000  //STC8G2K64
@@ -32,10 +30,10 @@ typedef unsigned char BYTE;
 void EEPROM_init(void);
 void EEPROM_kongzhi(void);									   
 void IapIdle(void);                      //关闭IAP
-BYTE IapReadByte(WORD addr); 		     //从ISP/IAP/EEPROM区域读取一个字节
-void IapProgramByte(WORD addr,BYTE dat); //写一个字节数据到ISP/IAP/EEPROM区域
-void IapEraseSector(WORD addr);			 //扇区擦除
-void EEPROM_Write_Str(WORD addr,BYTE dat[],WORD dat_Len);
-void EEPROM_Read_Str(WORD addr);
+u8 IapReadByte(u16 addr); 		     //从ISP/IAP/EEPROM区域读取一个字节
+void IapProgramByte(u16 addr,u8 dat); //写一个字节数据到ISP/IAP/EEPROM区域
+void IapEraseSector(u16 addr);			 //扇区擦除
+void EEPROM_Write_Str(u16 addr,u8 dat[],u16 dat_Len);
+void EEPROM_Read_Str(u16 addr,u8 dat[],u16 dat_Len);
 
 #endif

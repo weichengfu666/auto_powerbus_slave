@@ -22,6 +22,10 @@
 ///********************* Timer0ÖÐ¶Ïº¯Êý************************/
 void timer0_int (void) interrupt TIMER0_VECTOR
 {
+    if(LED_displayTime != 0)
+    {
+        LED_displayTime++;
+    }
 	Time++;	
 	for(Time_i=0;Time_i<5;Time_i++)
 	{

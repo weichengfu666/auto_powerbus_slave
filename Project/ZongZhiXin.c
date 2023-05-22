@@ -7,21 +7,21 @@ char LiangDu_ChuShi=0,LiangDu_JieShu=0,LiangDu_DangQian=0;
 long LiangDu_HuanCun=0;
 uchar BianHao_QingChu[2],SouXunXuLie_Time=0,BiaoHaoFuZhi_Time=0;
 uint Time=0,Time_i=0;
-code uchar XuLieHao[5]={0x01,0x02,0x03,0x04,0x05};
+code uchar XuLieHao[5]={0x0a,0x0a,0x0a,0x0a,0x0a};
 
 
-code uint LiangDuDuiZhao[101]={0,
-	1,2,2,2,2,3,3,3,3,3,
-	4,4,4,4,5,5,5,6,6,6,
-	7,7,8,8,9,9,10,10,11,11,
-	12,13,14,15,16,17,19,20,21,22,
-	24,26,27,29,31,33,35,37,40,42,
-	45,48,51,55,58,62,66,71,75,80,
-	86,91,97,104,110,118,125,134,142,152,
-	162,172,184,196,209,222,237,252,269,287,
-	306,326,347,370,394,420,448,477,508,542,
-	577,615,656,699,745,794,846,902,961,1024
-};
+//code uint LiangDuDuiZhao[101]={0,
+//	1,2,2,2,2,3,3,3,3,3,
+//	4,4,4,4,5,5,5,6,6,6,
+//	7,7,8,8,9,9,10,10,11,11,
+//	12,13,14,15,16,17,19,20,21,22,
+//	24,26,27,29,31,33,35,37,40,42,
+//	45,48,51,55,58,62,66,71,75,80,
+//	86,91,97,104,110,118,125,134,142,152,
+//	162,172,184,196,209,222,237,252,269,287,
+//	306,326,347,370,394,420,448,477,508,542,
+//	577,615,656,699,745,794,846,902,961,1024
+//};
 void FenJi_Init(void)
 {	
 	uchar ZhuJi_Init_i,ZhuJi_Init_j;
@@ -70,8 +70,6 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			}
 		break;//a5 ff ff 02 52 61 01 02 03 52 61 96 8a
 		case 3://输出开
-			XunHuanTinZhi();
-			PWM_ShuChu(0x400);
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=3;
@@ -81,8 +79,6 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			}
 		break;//a5 ff ff 03 01 40   a5 00 02 03 A1 30
 		case 4://输出关
-			XunHuanTinZhi();
-			PWM_ShuChu(0);
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=4;
@@ -92,8 +88,6 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			}
 		break;//a5 ff ff 04 c3 01
 		case 5://亮度调节
-			XunHuanTinZhi();
-			PWM_ShuChu(GongNeng_HuanCun[1]*256+GongNeng_HuanCun[2]);
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=5;
@@ -104,8 +98,14 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				ZhiLingFaSong(5);
 			}
 		break;//a5 ff ff 05 03 a0 89 10
-		case 6://效果执行
-			XiaoGuo_ZhiXin(GongNeng_HuanCun[1]*256+GongNeng_HuanCun[2]);
+		case 6://联动效果执行
+            LED_PACK_id = GongNeng_HuanCun[1];
+            if( LED_PACK_id == 0 )
+            {
+                memcpy( &LED_displayPackArr[0][0], &GongNeng_HuanCun[2], PACKCOL );
+            }
+            LED_displayPackPlayer(LED_PACK_id);
+
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=6;
@@ -113,7 +113,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				FaSong_HuanCun[2]=IapReadByte(0x0001);
 				ZhiLingFaSong(3);
 			}
-		break;//a5 ff ff 06 00 01 c1 21    a5 00 02 06 00 01 79 04
+		break;//a5 ff ff 06 00 
 		case 7://编号清除
 			BianHao_QingChu[0]=0x00;
 			BianHao_QingChu[1]=0x00;
@@ -126,22 +126,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 		break;//a5 ff ff 07 c2 41
 	}
 }
-void XiaoGuo_ZhiXin(uint XiaoGouHao)
-{
-	if(XiaoGouHao<=(IapReadByte(0x0002)*256+IapReadByte(0x0003)))
-	{
-		for(GongNen_i=0;GongNen_i<5;GongNen_i++)
-		{
-			if(GongNen_Addr_Shou[GongNen_i]==0)
-			{
-				GongNen_Addr_Shou[GongNen_i]=IapReadByte(XiaoGouHao*2+2)*256+IapReadByte(XiaoGouHao*2+3);
-				GongNen_Addr_Wei[GongNen_i]=IapReadByte(XiaoGouHao*2+4)*256+IapReadByte(XiaoGouHao*2+5);
-				Delay_Time[GongNen_i]=0;
-				GongNen_i=5;
-			}
-		}
-	}
-}
+
 void ZongZhiXin(void)
 {	
 	if(SouXunXuLie_Time>0)
@@ -163,93 +148,7 @@ void ZongZhiXin(void)
 		FaSong_HuanCun[7]=XuLieHao[4];
 		ZhiLingFaSong(8);
 	}
-	for(ZongZhiXin_i=0;ZongZhiXin_i<5;ZongZhiXin_i++)
-	{
-		if(GongNen_Addr_Shou[ZongZhiXin_i]>0)
-		{
-			if(Delay_Time[ZongZhiXin_i]==0)
-			{
-				MuBiao_Time[ZongZhiXin_i]=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i])*0x10000+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+1)*0x100+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+2);
-				Delay_Time[ZongZhiXin_i]=1;
-			}
-			if((Delay_Time[ZongZhiXin_i]>=MuBiao_Time[ZongZhiXin_i])&&(Delay_Time[ZongZhiXin_i]>0))
-			{
-				XunHuanTinZhi();
-				switch(IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+3))
-				{
-					case 0://关
-						PWM_ShuChu(0);
-						GongNen_Addr_Shou[ZongZhiXin_i]=GongNen_Addr_Shou[ZongZhiXin_i]+4;
-					break;
-					case 1://开
-						PWM_ShuChu(0x400);
-						GongNen_Addr_Shou[ZongZhiXin_i]=GongNen_Addr_Shou[ZongZhiXin_i]+4;
-					break;
-					case 2://亮度
-						LiangDu_DangQian=LiangDuDuiZhao[IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+4)];
-						PWM_ShuChu(LiangDu_DangQian);
-						GongNen_Addr_Shou[ZongZhiXin_i]=GongNen_Addr_Shou[ZongZhiXin_i]+5;
-					break;
-					case 3://渐变
-						JianBian_Time1=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+5)*0x10000+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+6)*0x100+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+7);
-						if(JianBian_Time1>0)
-						{
-							LiangDu_ChuShi=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+4);
-							JianBian_Time2=JianBian_Time1;
-							LiangDu_JieShu=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+8);
-							LiangDu_DangQian=LiangDu_ChuShi;
-						}else{
-							LiangDu_DangQian=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+8);
-							PWM_ShuChu(LiangDu_DangQian);
-						}
-						GongNen_Addr_Shou[ZongZhiXin_i]=GongNen_Addr_Shou[ZongZhiXin_i]+9;
-					break;
-					case 4://循环
-						JianBian_Time1=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+7)*0x10000+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+8)*0x100+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+9);
-						if(JianBian_Time1>0)
-						{
-							XunHuan_Addr=GongNen_Addr_Shou[ZongZhiXin_i]+6;
-							LiangDu_ChuShi=IapReadByte(XunHuan_Addr);
-							JianBian_Time2=JianBian_Time1;
-							LiangDu_JieShu=IapReadByte(XunHuan_Addr+4);
-							LiangDu_DangQian=LiangDu_ChuShi;
-							PWM_ShuChu(LiangDu_DangQian);
-						}
-						XunHuan_Changdu=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+4)*256+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+5);
-						GongNen_Addr_Shou[ZongZhiXin_i]=GongNen_Addr_Shou[ZongZhiXin_i]+6+(XunHuan_Changdu*4);
-					break;
-				}
-				if(GongNen_Addr_Shou[ZongZhiXin_i]==GongNen_Addr_Wei[ZongZhiXin_i])
-				{
-					GongNen_Addr_Shou[ZongZhiXin_i]=0;
-					GongNen_Addr_Wei[ZongZhiXin_i]=0;
-					MuBiao_Time[ZongZhiXin_i]=0;
-					Delay_Time[ZongZhiXin_i]=0;
-				}else{
-					MuBiao_Time[ZongZhiXin_i]=IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i])*0x10000+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+1)*0x100+IapReadByte(GongNen_Addr_Shou[ZongZhiXin_i]+2);
-				}
-			}
-		}
-	}
 }
-void JianBian(void)
-{
-	if(JianBian_Time1>0)
-	{
-		LiangDu_HuanCun=(JianBian_Time1-JianBian_Time2)*(LiangDu_ChuShi-LiangDu_JieShu);
-		LiangDu_DangQian=LiangDu_ChuShi-(LiangDu_HuanCun/(long)JianBian_Time1);
-		if(LiangDu_DangQian>100)
-			LiangDu_DangQian=100;
-		if(LiangDu_DangQian<0)
-			LiangDu_DangQian=0;
-		PWM_ShuChu(LiangDuDuiZhao[LiangDu_DangQian]);
-	}
-}
-void XunHuanTinZhi(void)
-{
-	XunHuan_Changdu=0;
-	XunHuan_Addr=0;
-	XunHuan_ZhiZhen=0;
-	JianBian_Time1=0;
-}
+
+
 

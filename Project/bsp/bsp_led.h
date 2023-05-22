@@ -51,7 +51,7 @@ typedef struct LED_Flash{
 
 #if LED_BREATH
 
-extern u16 indexWaveBreath[];                     /* LED亮度等级 PWM表,指数曲线 ，此表使用工程目录下的python脚本index_wave.py生成*/
+extern code u16 indexWaveBreath[];                     /* LED亮度等级 PWM表,指数曲线 ，此表使用工程目录下的python脚本index_wave.py生成*/
 extern const u16 POINT_NUM;                 //计算PWM表有多少个元素
 extern LED_BreathTypeDef LED_BreathxxArr[];//呼吸灯控制全局变量数组
 

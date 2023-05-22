@@ -1,6 +1,6 @@
 #include "main.h"		 
 
-WORD EEPROM_Write_n_i=0;
+u16 EEPROM_Write_n_i=0;
 uchar EEPROM_Write_HuanCun[32];
 uint addr2=0,EEPROM_Write_i=0,EEPROM_Write_j=0;
 
@@ -15,7 +15,7 @@ void IapIdle()
 /*----------------------------
 从ISP/IAP/EEPROM区域读取一字节
 ----------------------------*/
-BYTE IapReadByte(WORD addr)
+u8 IapReadByte(u16 addr)
 {
 	addr += IAP_OFFSET; // 
 	return *(char code *)(addr); // 
@@ -23,7 +23,7 @@ BYTE IapReadByte(WORD addr)
 /*----------------------------
 写一字节数据到ISP/IAP/EEPROM区域
 ----------------------------*/
-void IapProgramByte(WORD addr, BYTE dat)
+void IapProgramByte(u16 addr, u8 dat)
 {
 	IAP_CONTR = 0x80;         			//使能IAP
 	IAP_TPS = 24;
@@ -37,9 +37,9 @@ void IapProgramByte(WORD addr, BYTE dat)
 	IapIdle();
 }
 /*----------------------------
-扇区擦除
+扇区擦除，擦除后为0xFF
 ----------------------------*/
-void IapEraseSector(WORD addr)
+void IapEraseSector(u16 addr)
 {
 	IAP_CONTR = 0x80;         //使能IAP
 	IAP_TPS = 24;
@@ -54,30 +54,21 @@ void IapEraseSector(WORD addr)
 /*----------------------------
 写入字符串到EEPROM
 ----------------------------*/
-void EEPROM_Write_Str(WORD addr,BYTE dat[],WORD dat_Len)
+void EEPROM_Write_Str(u16 addr,u8 dat[],u16 dat_Len)
 {
 	if(addr%512==0)
 		IapEraseSector(addr);
 	for(EEPROM_Write_i=0;EEPROM_Write_i<dat_Len;EEPROM_Write_i++)
 	{
-//	  WDT_CONTR=0x3d;//看门狗
 		IapProgramByte(addr+EEPROM_Write_i,dat[EEPROM_Write_i]);		
 	}
 }
 
-//void EEPROM_Read_Str(WORD addr)
-//{
-//	for(EEPROM_Write_i=0;EEPROM_Write_i<32;EEPROM_Write_i++)
-//	{
-//		Sendnum(EEPROM_Write_i+1);
-//		SendData(':');
-//		for(EEPROM_Write_j=0;EEPROM_Write_j<16;EEPROM_Write_j++)
-//		{
-//			WDT_CONTR=0x3d;
-//			SendData(' ');
-//			Sendnum(IapReadByte(addr+EEPROM_Write_i*16+EEPROM_Write_j));
-//		}
-//		SendData(13);
-//		SendData(10);
-//	}
-//}
+void EEPROM_Read_Str(u16 addr,u8 dat[],u16 dat_Len)
+{
+    u16 i = 0;
+    for(i = 0; i < dat_Len; i++)
+    {
+        dat[i] = IapReadByte(addr + i);
+    }
+}

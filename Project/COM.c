@@ -41,12 +41,14 @@ UART 中断服务程序
 void Uart() interrupt 4 using 1
 { 
 	if (RI)
-	{	                //清除RI位
-		//JiHuo[0]=SBUF;
+	{	                
+        RI = 0;     //清除RI位
 	}
-	RI = 0;
-	TI = 0;                 //清除TI位
-  busy = 0; 
+    if (TI)
+	{	             
+        TI = 0;    //清除TI位
+        busy = 0; 
+	}
 }
 
 void FenJi_ShuJuChuLi(uchar FenJi_Data)
@@ -108,14 +110,9 @@ void ZhiLingFaSong(uchar ChangDu)
 }
 void SendData(uchar dat)
 {
-  while (busy)               //等待前面的数据发送完成
-	{
-		if(busy_flag==0)
-			busy_flag=1;
-	}
-	busy_flag=0;
-    busy = 1;
+    while (busy) ;             //等待前面的数据发送完成
     SBUF = dat;                 //写数据到UART数据寄存器
+    busy = 1;
 }		 
 
 /*----------------------------

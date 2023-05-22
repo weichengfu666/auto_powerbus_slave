@@ -5,13 +5,14 @@
 #define uchar unsigned char
 #endif
 #ifndef uint
-#define uint unsigned int
+#define uint unsigned int //两字节
 #endif
 #ifndef ulong
-#define ulong unsigned long
+#define ulong unsigned long //四字节
 #endif
 #include "intrins.h"
 #include "STC8xxxx.H"
+#include "string.h"
 #include "math.h"
 #include "Clock.h"	 
 #include "COM.h" 
@@ -28,5 +29,6 @@
 #include    "bsp_led.h"
 #include    "bsp_display.h"
 #include    "bsp_eeprom.h"
+#include    "bsp_test.h"
 
 #endif
