@@ -6,7 +6,7 @@ uchar JiHuo[2]={0,0},ZhuJiJieShou_HuanCun[3][20];
 uchar ZhuJiJieShou_HuanCun_i[3]={0,0,0};
 uchar FaSong_HuanCun[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},GuangBo_Flag[3]={0,0,0};
 bit busy,busy2;	 
-code uchar ZhiLin_ChangDu[10]={11,13,6,6,8,8,6,0,0,0};
+uchar ZhiLin_ChangDu[0x30]={11,13,6,6,8,8,6,0,0,0};
 
 /*----------------------------
     UART1≥ı ºªØ

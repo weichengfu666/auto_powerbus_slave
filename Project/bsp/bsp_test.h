@@ -34,7 +34,7 @@
 #define PACKCOL      14  //效果包列数：单个效果的参数
 
 extern u32 LED_displayTime;
-extern u8   LED_PACK_id;
+extern u16   LED_PACK_id;
 extern u8 LED_displayPackArr[PACKROW][PACKCOL];  //读取效果包到内存
 extern code u8 LED_displayPack1[PACKROW][PACKCOL];
 extern code u8 LED_displayPack2[PACKROW][PACKCOL];

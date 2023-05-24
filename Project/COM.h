@@ -7,6 +7,7 @@
 #define S2TB8 0x08              //S2CON.3
 
 extern uchar ZhuJiJieShou_HuanCun[3][20],FaSong_HuanCun[20];
+extern uchar ZhiLin_ChangDu[0x30];
 
 void InitUART(void);
 void SendData(uchar dat);

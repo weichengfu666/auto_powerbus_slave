@@ -11,6 +11,7 @@ void main()
 
     EEPROM_Write_Str(PACK1,(void*)LED_displayPack1,PACKROW*PACKCOL);
     EEPROM_Write_Str(PACK2,(void*)LED_displayPack2,PACKROW*PACKCOL);
+    
 //    EEPROM_Read_Str(PACK1,(void*)LED_displayPack1,PACKROW*PACKCOL);
     
 ////    memset(EEPROM_ChuShi, 0x00, 2);
@@ -24,7 +25,7 @@ void main()
 //            SendData(LED_displayPackArr[i][j]);
 //        }
 //    }
-    LED_displayPackPlayer(1);
+//    LED_displayPackPlayer(1);
 //    LED_displayPackPlayer(PACK2);
 	SendData(0x61);
 	SendData2(0x61);
