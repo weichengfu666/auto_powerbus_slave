@@ -11,23 +11,23 @@ void disPlay(void)
 #define waveGradChangeEnd 100
 #define delayMs 3000
     
-    LED_breathInit(PWM00, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM01, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM02, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM03, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM04, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM05, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM06, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM07, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    
-    LED_breathInit(PWM20, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM21, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM22, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM23, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM24, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM25, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM26, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
-    LED_breathInit(PWM27, FLASH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM00, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM01, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM02, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM03, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM04, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM05, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM06, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM07, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    
+//    LED_breathInit(PWM20, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM21, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM22, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM23, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM24, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM25, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM26, BREATH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
+//    LED_breathInit(PWM27, FLASH, periodBreath, periodGradChange, periodFlash, waveGradChangeStart, waveGradChangeEnd);
 
     EA = 1;
 
