@@ -25,8 +25,9 @@ void main()
 //            SendData(LED_displayPackArr[i][j]);
 //        }
 //    }
-//    LED_displayPackPlayer(1);
+    LED_displayPackPlayer(1);
 //    LED_displayPackPlayer(PACK2);
+//LED_breathInit(PWM00,GRADCHANGE_CYCLE,3000,3000,100,0,0);
 	SendData(0x61);
 	SendData2(0x61);
 

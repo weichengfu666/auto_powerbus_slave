@@ -5,17 +5,32 @@
 #if LED_BREATH  //100*2 + 100*2 + 2 + 24*22（528） = 930 字节
 
 /* LED亮度等级 PWM表,指数曲线 ，此表使用工程目录下的python脚本index_wave.py生成*/
-code u16 indexWaveBreath[100] = {
-1,   1,   1,   2,   2,    2,    3,    3,    4,    5,
-5,   6,   7,   8,   9,    10,   11,   13,   15,   17, 
-19,  22,  25,  28,  32,   36,   41,   47,   53,   69, 
-79,  89,  116, 131, 149,  170,  193,  219,  250,  284,
-323, 367, 417, 474, 539,  613,  697,  792,  901,  1024, 
-1024,901, 792, 697, 613,  539,  474,  417,  367,  323,
-284, 250, 219, 193, 170,  149,  131,  116,  89,   79, 
-69,  53,  47,  41,  36,   32,   28,   25,   22,   19, 
-17,  15,  13,  11,  10,   9,    8,    7,    6,    5, 
-5,   4,   3,   3,   2,    2,    2,    1,    1,    1
+
+//code u16 indexWaveBreath[100] = {
+//1,   1,   1,   2,   2,    2,    3,    3,    4,    5,
+//5,   6,   7,   8,   9,    10,   11,   13,   15,   17, 
+//19,  22,  25,  28,  32,   36,   41,   47,   53,   69, 
+//79,  89,  116, 131, 149,  170,  193,  219,  250,  284,
+//323, 367, 417, 474, 539,  613,  697,  792,  901,  1024, 
+//1024,901, 792, 697, 613,  539,  474,  417,  367,  323,
+//284, 250, 219, 193, 170,  149,  131,  116,  89,   79, 
+//69,  53,  47,  41,  36,   32,   28,   25,   22,   19, 
+//17,  15,  13,  11,  10,   9,    8,    7,    6,    5, 
+//5,   4,   3,   3,   2,    2,    2,    1,    1,    1
+//};
+
+
+code u16 indexWaveBreath[202] = {
+1,1,         1,      1,      1,      1,      1,      2,      2,      2,      2,       2,        2,       3,       3,       3,     3,       4,      4,      5,        5,
+5,         5,      6,      6,      7,      7,      8,      8,      9,      9,     10,      10,      11,     11,     13,    13,     15,    15,    17,      17, 
+19,      19,    22,    22,    25,    25,     28,    28,    32,    32,     36,      36,      41,     41,     47,    47,     53,    53,    69,      69, 
+79,      79,    89,    89,  116,   116,  131,   131,   149,   149,   170,    170,    193,   193,   219,   219,  250,   250,   284,  284,
+323,   323,  367,  367,  417,   417, 474,   474,    539,   539,   613,    613,    697,   697,   792,   792,  901,   901, 1024,1024, 
+1024,1024, 901,  901,  792,   792,  697,   697,   613,   613,   539,    539,     474,   474,  417,   417,  367,   367,   323,  323,
+284,   284,  250,  250,  219,  219,   193,   193,   170,   170,   149,   149,    131,     131,  116,   116,    89,    89,     79,    79, 
+69,       69,   53,    53,    47,   47,      41,     41,    36,    36,     32,       32,      28,     28,    25,     25,   22,      22,    19,    19, 
+17,       17,   15,   15,     13,   13,      11,     11,    10,    10,      9,          9,       8,       8,      7,      7,     6,       6,       5,      5, 
+5,          5,      4,    4,       3,     3,       3,       3,      2,      2,       2,         2,       2,       2,       1,      1,     1,       1,      1,       1,1
 };
 //呼吸PWM表有100个元素
 const u16 IndexWaveBreath_size = sizeof( indexWaveBreath ) / sizeof( u16 );
@@ -33,8 +48,8 @@ const u16 IndexWaveBreath_size = sizeof( indexWaveBreath ) / sizeof( u16 );
 //181,  161, 141, 121, 101,   81,   61,   41,   21,    1,
 //};
 
-code u16 indexWaveGradChange[200] = {//呼吸和渐变共用
-1,        11,    21,   31,   41,   51,   61,    71,    81,   91,   101,  111,  121,  131,   141,  151,   161,  171,  181,   191,
+code u16 indexWaveGradChange[202] = {//呼吸和渐变共用
+1,1,        11,    21,   31,   41,   51,   61,    71,    81,   91,   101,  111,  121,  131,   141,  151,   161,  171,  181,   191,
 201,   211, 221, 231,  241, 251,  261,  271,  281,  291,  301,  311,  321,  331,   341,  351,   361,  371,  381,   391,
 401,   411, 421, 431,  441, 451,  461,  471,  481,  491,  501,  511,  521,  531,   541,  551,   561,  571,  581,   591,
 601,   611, 621, 631,  641, 651,  661,  671,  681,  691,  701,  711,  721,  731,   741,  751,   761,  771,  781,   791,
@@ -43,7 +58,7 @@ code u16 indexWaveGradChange[200] = {//呼吸和渐变共用
 791,   781, 771, 761,  751, 741,  731,  721,  711,  701,  691,  681,  671,  661,   651,  641,   631,  621,  611,   601,
 591,   581, 571, 561,  551, 541,  531,  521,  511,  501,  491,  481,  471,  461,   451,  441,   431,  421,  411,   401,
 391,   381, 371, 361,  351, 341,  331,  321,  311,  301,  291,  281,  271,  261,   251,  241,   231,  221,  211,   201,
-191,   181, 171, 161,  151, 141,  131,  121,  111,  101,   91,     81,   71,    61,     51,    41,     31,    21,   11,       1,
+191,   181, 171, 161,  151, 141,  131,  121,  111,  101,   91,     81,   71,    61,     51,    41,     31,    21,   11,       1,1
 };
 //渐变PWM表有200个元素
 const u16 IndexWaveGradChange_size = sizeof( indexWaveGradChange ) / sizeof( u16 );
@@ -107,16 +122,15 @@ void LED_breathTIMER4Config(void)
 *	功能说明: led呼吸灯初始化函数
 *	形    参: _PWMxx 呼吸灯引脚结构体指针,固定取值范围： （ PWM00~PWM07, PWM10~PWM17, PWM20~PWM27 ）
 *             _breath_state 设置呼吸的灯状态为 高电平，低电平，亮度1~99，呼吸 ，渐变，频闪，固定取值范围：（ HIGH ， LOW ，1~99 ， BREATH ， GRADCHANGE_ONCE，GRADCHANGE_CYCLE ， FLASH ）
-*             _periodBreath_cntCmp 呼吸周期计数比较值,控制呼吸快慢,建议取值： （ 100~5000  ms ）
-*             _periodGradChange_cntCmp  渐变周期计数比较值,控制渐变快慢,建议取值： （ 100~5000  ms ）
-*             _periodFlash_cntCmp  频闪周期计数比较值，控制频闪快慢，建议取值：（ 30~100 ms ）
-*             _waveGradChange_start  渐变PWM起始亮度（0~99），呼吸PWM最小亮度（0~49）
-*             _waveGradChange_end  渐变PWM结束亮度（0~99），呼吸PWM最大亮度（0~49）
-*             _waveBreath_now 呼吸PWM当前亮度（0~99）
+*             _periodBreathFlash1_cntCmp 参数共用：呼吸和频闪周期计数比较值,控制呼吸快慢,建议取值： （ 100~5000  ms ）
+*             _periodGradChangeFlash2_cntCmp  参数共用：渐变和频闪周期计数比较值,控制渐变快慢,建议取值： （ 100~5000  ms ）
+*             _waveBreathChangeFlash_start  参数共用：呼吸PWM最小亮度（0~100），渐变PWM起始亮度（0~100），频闪PWM最小亮度（0~100）
+*             _waveBreathChangeFlash_end  参数共用：呼吸PWM最大亮度（0~100），渐变PWM结束亮度（0~100），频闪PWM最大亮度（0~100）
+*             _waveBreathChangeFlash_now 呼吸PWM当前亮度（0~100）
 *	返 回 值: void
 *********************************************************************************************************
 */
-void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreath_cntCmp, u16 _periodGradChange_cntCmp, u16 _periodFlash_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end, u8 _waveBreathChangeFlash_now )
+void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end, u8 _waveBreathChangeFlash_now )
 {
     LED_BreathTypeDef* _LED_Breathxx = &LED_BreathxxArr[_PWMxx];
     
@@ -125,11 +139,15 @@ void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreath_cntCmp, u16 
     _LED_Breathxx->periodFlash_cnt = 0;               //重置频闪周期计数标志
     _LED_Breathxx->waveBreath_index = _waveBreathChangeFlash_now;           //重置呼吸PWM表指针
     _LED_Breathxx->waveChangeFlash_index = _waveBreathChangeFlash_now; //重置渐变频闪PWM表指针
+    if( _breath_state == GRADCHANGE_ONCE || _breath_state == GRADCHANGE_CYCLE || _breath_state == FLASH )
+    {
+        _LED_Breathxx->waveChangeFlash_index = _waveBreathChangeFlash_start;
+    }
  
     LED_breathGPIOConfig(_PWMxx);                    //led呼吸灯端口GPIO配置函数
     LED_breathPWM15Config(_PWMxx);                //led呼吸灯端口PWM15配置函数
     LED_breathTIMER4Config();                             //led呼吸灯端口TIMER4配置函数
-    LED_breathSetPeriod(_PWMxx, _periodBreath_cntCmp, _periodGradChange_cntCmp, _periodFlash_cntCmp, _waveBreathChangeFlash_start, _waveBreathChangeFlash_end); //设置周期计数比较值
+    LED_breathSetPeriod(_PWMxx, _breath_state, _periodBreathFlash1_cntCmp, _periodChangeFlash2_cntCmp, _waveBreathChangeFlash_start, _waveBreathChangeFlash_end); //设置周期计数比较值
     LED_breathSetState(_PWMxx, _breath_state);   //设置状态
 }
 /*
@@ -137,7 +155,7 @@ void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreath_cntCmp, u16 
 *	函 数 名: LED_breathSetState
 *	功能说明: led呼吸设置状态函数
 *	形    参: _PWMxx  呼吸灯引脚结构体指针,取值：  PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
-*             _breath_state  设置呼吸的灯状态为 高电平，低电平，亮度0~100，呼吸 ，渐变，频闪，取值：（ HIGH ， LOW ，0~100 ， BREATH ， GRADCHANGE ， FLASH ）
+*             _breath_state  设置呼吸的灯状态为 高电平，低电平，亮度0~100，呼吸 ，渐变，频闪，取值：（ HIGH ， LOW ，0~100 ， BREATH ， GRADCHANGE_ONCE， GRADCHANGE_CYCLE ， FLASH ）
 *	返 回 值: void
 *********************************************************************************************************
 */
@@ -188,54 +206,72 @@ void LED_breathSetState(u8 _PWMxx, u8 _breath_state)
 *	函 数 名: LED_breathSetPeriod
 *	功能说明: led呼吸设置周期函数
 *	形    参: _PWMxx,呼吸灯引脚结构体指针,取值： PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
-*             _periodBreath_cntCmp 呼吸周期计数比较值,控制呼吸快慢,建议取值： （ 100~5000  ms ）
-*             _periodGradChange_cntCmp  渐变周期计数比较值,控制渐变快慢,建议取值： （ 100~5000  ms ）
-*             _periodFlash_cntCmp  频闪周期计数比较值，控制频闪快慢，建议取值：（ 30~100 ms ）
-*             _waveGradChange_start  渐变PWM起始亮度（0~99），呼吸PWM最小亮度（0~49），频闪PWM起始亮度（0~49）
-*             _waveGradChange_end  渐变PWM结束亮度（0~99），呼吸PWM最大亮度（0~49），频闪PWM结束亮度（0~49）
+*             _periodBreathFlash1_cntCmp 参数共用：呼吸和频闪周期计数比较值,控制呼吸快慢,建议取值： （ 100~5000  ms ）
+*             _periodGradChangeFlash2_cntCmp  参数共用：渐变和频闪周期计数比较值,控制渐变快慢,建议取值： （ 100~5000  ms ）
+*             _waveBreathChangeFlash_start  参数共用：呼吸PWM最小亮度（0~100），渐变PWM起始亮度（0~100），频闪PWM最小亮度（0~100）
+*             _waveBreathChangeFlash_end  参数共用：呼吸PWM最大亮度（0~100），渐变PWM结束亮度（0~100），频闪PWM最大亮度（0~100）
 *	返 回 值: void
 *********************************************************************************************************
 */
-void LED_breathSetPeriod(u8 _PWMxx, u16 _periodBreath_cntCmp, u16 _periodGradChange_cntCmp, u16 _periodFlash_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end)
+void LED_breathSetPeriod(u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end)
 {
     LED_BreathTypeDef* _LED_Breathxx = &LED_BreathxxArr[_PWMxx];
-    
-    if( _waveBreathChangeFlash_start != DEFAULT&&0x00FF )
+    if( _waveBreathChangeFlash_start > _waveBreathChangeFlash_end )//渐变亮度降低的情况
     {
-        _LED_Breathxx->waveBreathChangeFlash_start = _waveBreathChangeFlash_start;
-    }
-    
-    if( _waveBreathChangeFlash_end != DEFAULT&&0x00FF )
-    {
-        _LED_Breathxx->waveBreathChangeFlash_end = _waveBreathChangeFlash_end;
-    }
-    
-    if( _periodBreath_cntCmp != DEFAULT ) //设置呼吸周期计数比较值
-    {
-        if(_periodBreath_cntCmp <= 100)
+        if( _waveBreathChangeFlash_start != DEFAULT&&0x00FF )
         {
-            _periodBreath_cntCmp = 100;
+            _LED_Breathxx->waveBreathChangeFlash_start = ( IndexWaveGradChange_size - 1 ) - _waveBreathChangeFlash_start;
         }
-        _LED_Breathxx->periodBreath_cntCmp = _periodBreath_cntCmp / ( (_LED_Breathxx->waveBreathChangeFlash_end - _LED_Breathxx->waveBreathChangeFlash_start + 1) * 2 );      
-    }
-    
-    if( _periodGradChange_cntCmp != DEFAULT ) //设置渐变周期计数比较值
-    {
-        if(_periodGradChange_cntCmp <= 100)
+        
+        if( _waveBreathChangeFlash_end != DEFAULT&&0x00FF )
         {
-            _periodGradChange_cntCmp = 100;
+            _LED_Breathxx->waveBreathChangeFlash_end = ( IndexWaveGradChange_size - 1 ) - _waveBreathChangeFlash_end;
         }
-        _LED_Breathxx->periodGradChange_cntCmp = _periodGradChange_cntCmp / ( _LED_Breathxx->waveBreathChangeFlash_end - _LED_Breathxx->waveBreathChangeFlash_start + 1 );//渐变周期误差来源于不能整除, 整除则没有误差，一个周期的最大误差不超过 (end - start) ms
+    }
+    else
+    {
+        if( _waveBreathChangeFlash_start != DEFAULT&&0x00FF )
+        {
+            _LED_Breathxx->waveBreathChangeFlash_start = _waveBreathChangeFlash_start;
+        }
+        
+        if( _waveBreathChangeFlash_end != DEFAULT&&0x00FF )
+        {
+            _LED_Breathxx->waveBreathChangeFlash_end = _waveBreathChangeFlash_end;
+        }
     }
 
-    if( _periodFlash_cntCmp != DEFAULT ) //设置频闪周期计数比较值
+    if( _breath_state == FLASH )//设置频闪周期计数比较值
     {
-        if( _periodFlash_cntCmp <= 30 )
+        if( _periodBreathFlash1_cntCmp != DEFAULT ) 
         {
-            _periodFlash_cntCmp = 30;            
+            _LED_Breathxx->periodBreathFlash1_cntCmp = _periodBreathFlash1_cntCmp; 
+        } 
+        if( _periodChangeFlash2_cntCmp != DEFAULT ) 
+        {
+            _LED_Breathxx->periodChangeFlash2_cntCmp = _periodChangeFlash2_cntCmp; 
         }
-        _LED_Breathxx->periodFlash_cntCmp = _periodFlash_cntCmp / 2; 
-    } 
+    }
+    else
+    {
+        if( _periodBreathFlash1_cntCmp != DEFAULT ) //设置呼吸周期计数比较值
+        {
+            if(_periodBreathFlash1_cntCmp <= 100)
+            {
+                _periodBreathFlash1_cntCmp = 100;
+            }
+            _LED_Breathxx->periodBreathFlash1_cntCmp = _periodBreathFlash1_cntCmp / ( (_LED_Breathxx->waveBreathChangeFlash_end - _LED_Breathxx->waveBreathChangeFlash_start + 1) * 2 );      
+        }
+        
+        if( _periodChangeFlash2_cntCmp != DEFAULT ) //设置渐变周期计数比较值
+        {
+            if(_periodChangeFlash2_cntCmp <= 100)
+            {
+                _periodChangeFlash2_cntCmp = 100;
+            }
+            _LED_Breathxx->periodChangeFlash2_cntCmp = _periodChangeFlash2_cntCmp / ( _LED_Breathxx->waveBreathChangeFlash_end - _LED_Breathxx->waveBreathChangeFlash_start + 1 );//渐变周期误差来源于不能整除, 整除则没有误差，一个周期的最大误差不超过 (end - start) ms
+        }
+    }
 }
 /*
 *********************************************************************************************************
@@ -252,19 +288,25 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
     {
         _LED_Breathxx->periodBreath_cnt++;
         PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
-        PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveBreath_index]);	    //根据PWM表修改定时器的比较寄存器值
+        if( _LED_Breathxx->waveBreath_index == 0 || _LED_Breathxx->waveBreath_index == IndexWaveBreath_size - 1 )//根据PWM表修改定时器的比较寄存器值
+        {
+            PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
+        }
+        else
+        {
+            PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveBreath_index]);
+        }
         //每个PWM表中的每个元素使用 period_cntCmp 次
-        if(_LED_Breathxx->periodBreath_cnt > _LED_Breathxx->periodBreath_cntCmp)				 				
+        if(_LED_Breathxx->periodBreath_cnt > _LED_Breathxx->periodBreathFlash1_cntCmp)				 				
         {		
             _LED_Breathxx->waveBreath_index++;												//标志PWM表指向下一个元素
-            //若PWM表已到达结尾，重新指向表头
-            if( _LED_Breathxx->waveBreath_index ==  _LED_Breathxx->waveBreathChangeFlash_end + 1)			
+            if( _LED_Breathxx->waveBreath_index ==  _LED_Breathxx->waveBreathChangeFlash_end + 1)//若PWM表已达到上升的最大亮度
             {
-                _LED_Breathxx->waveBreath_index = ( IndexWaveBreath_size - 1 ) - _LED_Breathxx->waveBreathChangeFlash_end;								
+                _LED_Breathxx->waveBreath_index = ( IndexWaveBreath_size - 1 ) - _LED_Breathxx->waveBreathChangeFlash_end;//重新指向PWM表下降的最大亮度				
             }
-            if( _LED_Breathxx->waveBreath_index == ( IndexWaveBreath_size - 1 ) - _LED_Breathxx->waveBreathChangeFlash_start + 1)			
+            if( _LED_Breathxx->waveBreath_index == ( IndexWaveBreath_size - 1 ) - _LED_Breathxx->waveBreathChangeFlash_start + 1)//若PWM表已达到下降的最低亮度
             {
-                _LED_Breathxx->waveBreath_index = _LED_Breathxx->waveBreathChangeFlash_start;								
+                _LED_Breathxx->waveBreath_index = _LED_Breathxx->waveBreathChangeFlash_start;//重新指向PWM表上升的最低亮度					
             }
             _LED_Breathxx->periodBreath_cnt=0;											//重置呼吸和渐变周期计数标志
         }   
@@ -282,7 +324,7 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
             PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);	
         }
         //每个PWM表中的每个元素使用 period_cntCmp 次
-        if(_LED_Breathxx->periodGradChange_cnt > _LED_Breathxx->periodGradChange_cntCmp)				 				
+        if(_LED_Breathxx->periodGradChange_cnt > _LED_Breathxx->periodChangeFlash2_cntCmp)				 				
         {				
             _LED_Breathxx->waveChangeFlash_index++;												//标志PWM表指向下一个元素
             //若PWM表已到达结尾，重新指向表头
@@ -313,12 +355,11 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
             }
             else
             {
-                PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveChangeFlash_index]);
+                PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
             }
-            if(_LED_Breathxx->periodFlash_cnt >= _LED_Breathxx->periodFlash_cntCmp) //频闪计数周期到，翻转频闪电平
+            if(_LED_Breathxx->periodFlash_cnt >= _LED_Breathxx->periodBreathFlash1_cntCmp) //频闪计数周期到，翻转频闪电平
             {
                 _LED_Breathxx->waveChangeFlash_index = _LED_Breathxx->waveBreathChangeFlash_end;
-                _LED_Breathxx->periodFlash_cnt = 0;       //重置频闪周期计数标志
             }
         }
         else if( _LED_Breathxx->waveChangeFlash_index == _LED_Breathxx->waveBreathChangeFlash_end)
@@ -330,9 +371,9 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
             }
             else
             {
-                PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveChangeFlash_index]);
+                PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
             }
-            if(_LED_Breathxx->periodFlash_cnt >= _LED_Breathxx->periodFlash_cntCmp) //频闪计数周期到，翻转频闪电平
+            if(_LED_Breathxx->periodFlash_cnt >= _LED_Breathxx->periodChangeFlash2_cntCmp) //频闪计数周期到，翻转频闪电平
             {
                 _LED_Breathxx->waveChangeFlash_index = _LED_Breathxx->waveBreathChangeFlash_start;
                 _LED_Breathxx->periodFlash_cnt = 0;       //重置频闪周期计数标志

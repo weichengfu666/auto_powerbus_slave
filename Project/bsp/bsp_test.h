@@ -30,8 +30,8 @@
 #define	PACK7				FLASHADDR_DISPLAY7
 
 //504字节
-#define PACKROW     34  //效果包行数：有多少个效果
-#define PACKCOL      15  //效果包列数：单个效果的参数
+#define PACKROW     39  //效果包行数：有多少个效果
+#define PACKCOL      13  //效果包列数：单个效果的参数
 
 extern u32 LED_displayTime;
 extern u16   LED_PACK_id;

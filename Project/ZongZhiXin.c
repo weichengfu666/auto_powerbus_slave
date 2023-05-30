@@ -53,18 +53,17 @@ void FenJi_Init(void)
     ZhiLin_ChangDu[0x21-1] = 8;
     ZhiLin_ChangDu[0x22-1] = 13;
     ZhiLin_ChangDu[0x23-1] = 12;
-    ZhiLin_ChangDu[0x24-1] = 12;
+    ZhiLin_ChangDu[0x24-1] = 14;
 }
 void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 {	
     //LED控制参数初始化
     u8 PWMxx = PWM00;
     u8 breath_state = HIGH;
-    u16 periodBreath_cntCmp = 0x03e8;
-    u16 periodGradChange_cntCmp = 0x03e8;
-    u16 periodFlash_cntCmp = 0x0032;
+    u16 periodBreathFlash1_cntCmp = 0x03e8;
+    u16 periodChangeFlash2_cntCmp = 0x03e8;
     u8 waveBreathChangeFlash_start = 0;
-    u8 waveBreathChangeFlash_end = 49;
+    u8 waveBreathChangeFlash_end = 100;
     u8 waveBreathChangeFlash_now = 0;
 
 	switch(GongNeng_HuanCun[0])
@@ -78,7 +77,6 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 							{
 								if((IapReadByte(0x0000)==0)&&(IapReadByte(0x0001)==0))
 								{
-                                    SendData2(0x02);
 									SouXunXuLie_Time=1;
 								}
 							}
@@ -149,51 +147,41 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			ZhiLingFaSong(3);
             break;//a5 ff ff 07 c2 41
         case 0x20://LED开关
-
             PWMxx = GongNeng_HuanCun[1];
             breath_state = GongNeng_HuanCun[2];
-        SendData(breath_state);
-            LED_breathInit(PWMxx, breath_state, periodBreath_cntCmp, periodGradChange_cntCmp, periodFlash_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
             break;
 		case 0x21://LED亮度设定
-
             PWMxx = GongNeng_HuanCun[1];
             breath_state = GongNeng_HuanCun[2];
-        SendData(breath_state);
-            LED_breathInit(PWMxx, breath_state, periodBreath_cntCmp, periodGradChange_cntCmp, periodFlash_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
             break;
 		case 0x22://LED循环呼吸
-            
             PWMxx = GongNeng_HuanCun[1];
             breath_state = GongNeng_HuanCun[2];
-        SendData(breath_state);
-            periodBreath_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
+            periodBreathFlash1_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
             waveBreathChangeFlash_start = GongNeng_HuanCun[5];
             waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
             waveBreathChangeFlash_now = GongNeng_HuanCun[7];
-            LED_breathInit(PWMxx, breath_state, periodBreath_cntCmp, periodGradChange_cntCmp, periodFlash_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
             break;
 		case 0x23://LED循环（单次）渐变
-            
             PWMxx = GongNeng_HuanCun[1];
             breath_state = GongNeng_HuanCun[2];
-        SendData(breath_state);
-            periodGradChange_cntCmp    = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
+            periodChangeFlash2_cntCmp    = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
             waveBreathChangeFlash_start = GongNeng_HuanCun[5];
             waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
-            waveBreathChangeFlash_now = GongNeng_HuanCun[7];
-            LED_breathInit(PWMxx, breath_state, periodBreath_cntCmp, periodGradChange_cntCmp, periodFlash_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
             break;
 		case 0x24://LED循环闪烁
-            
             PWMxx = GongNeng_HuanCun[1];
             breath_state = GongNeng_HuanCun[2];
-        SendData(breath_state);
-            periodFlash_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
-            waveBreathChangeFlash_start = GongNeng_HuanCun[5];
-            waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
+            periodBreathFlash1_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
+            periodChangeFlash2_cntCmp  = GongNeng_HuanCun[5]*256 + GongNeng_HuanCun[6];
+            waveBreathChangeFlash_start = GongNeng_HuanCun[7];
+            waveBreathChangeFlash_end  = GongNeng_HuanCun[8];
             waveBreathChangeFlash_now = waveBreathChangeFlash_start;
-            LED_breathInit(PWMxx, breath_state, periodBreath_cntCmp, periodGradChange_cntCmp, periodFlash_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
             break;
 	}
 }
