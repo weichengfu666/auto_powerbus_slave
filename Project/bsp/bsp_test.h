@@ -38,6 +38,7 @@ extern u16   LED_PACK_id;
 extern u8 LED_displayPackArr[PACKROW][PACKCOL];  //读取效果包到内存
 extern code u8 LED_displayPack1[PACKROW][PACKCOL];
 extern code u8 LED_displayPack2[PACKROW][PACKCOL];
+extern u8 StartDisplayPack_flag;
 
 void LED_displayPackStore( u8 _PACK_id );
 void LED_displayPackPlayer( u8 _PACK_id );

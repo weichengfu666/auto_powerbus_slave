@@ -8,6 +8,7 @@ extern ulong Delay_Time[5],MuBiao_Time[5],JianBian_Time1,JianBian_Time2;
 extern uint GongNen_Addr_Shou[5],GongNen_Addr_Wei[5],XunHuan_Changdu,XunHuan_ZhiZhen,XunHuan_Addr;
 extern long LiangDu_HuanCun;
 extern uint  Time,Time_i;
+extern u8 EEPROM_ChuShi[2];
 
 void FenJi_Init(void);
 void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag);

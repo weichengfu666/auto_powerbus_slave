@@ -7,7 +7,7 @@ char LiangDu_ChuShi=0,LiangDu_JieShu=0,LiangDu_DangQian=0;
 long LiangDu_HuanCun=0;
 uchar BianHao_QingChu[2],SouXunXuLie_Time=0,BiaoHaoFuZhi_Time=0;
 uint Time=0,Time_i=0;
-code uchar XuLieHao[5]={0x0A,0x0A,0x0A,0x0A,0x0A};
+code uchar XuLieHao[5]={0x01,0x00,0x0a,0x0a,0x0a};
 u8 EEPROM_ChuShi[2] = {0x00, 0x00}; //分机赋值号
 
 //code uint LiangDuDuiZhao[101]={0,
@@ -48,6 +48,7 @@ void FenJi_Init(void)
     ZhiLin_ChangDu[0x05-1] = 8;
     ZhiLin_ChangDu[0x06-1] = 8;
     ZhiLin_ChangDu[0x07-1] = 6;
+    ZhiLin_ChangDu[0x0b-1] = 6;
     
     ZhiLin_ChangDu[0x20-1] = 8;
     ZhiLin_ChangDu[0x21-1] = 8;
@@ -80,7 +81,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 									SouXunXuLie_Time=1;
 								}
 							}
-            break;	
+        break;
 		case 2://编号赋值 a5 ff ff 02 cc 00 00 00 00 00 02 14 0c
 			if((GongNeng_HuanCun[1]==XuLieHao[0])&&(GongNeng_HuanCun[2]==XuLieHao[1])&&(GongNeng_HuanCun[3]==XuLieHao[2])&&(GongNeng_HuanCun[4]==XuLieHao[3])&&(GongNeng_HuanCun[5]==XuLieHao[4]))
 			{
@@ -90,7 +91,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				EEPROM_Write_Str(0x0000,BianHao_HuanCun,2);
 				BiaoHaoFuZhi_Time=1;
 			}
-            break;//a5 ff ff 02 52 61 01 02 03 52 61 96 8a
+        break;//a5 ff ff 02 52 61 01 02 03 52 61 96 8a
 		case 3://输出开
             
 			if(FanHui_Flag==0)
@@ -100,7 +101,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				FaSong_HuanCun[2]=IapReadByte(0x0001);
 				ZhiLingFaSong(3);
 			}
-            break;//a5 ff ff 03 01 40   a5 00 02 03 A1 30
+        break;//a5 ff ff 03 01 40   a5 00 02 03 A1 30
 		case 4://输出关
 			if(FanHui_Flag==0)
 			{
@@ -109,7 +110,7 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				FaSong_HuanCun[2]=IapReadByte(0x0001);
 				ZhiLingFaSong(3);
 			}
-            break;//a5 ff ff 04 c3 01
+        break;//a5 ff ff 04 c3 01
 		case 5://亮度调节
 			if(FanHui_Flag==0)
 			{
@@ -120,69 +121,161 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				FaSong_HuanCun[4]=GongNeng_HuanCun[2];
 				ZhiLingFaSong(5);
 			}
-            break;//a5 ff ff 05 03 a0 89 10
+        break;//a5 ff ff 05 03 a0 89 10
 		case 6://联动效果执行
-            LED_PACK_id = GongNeng_HuanCun[1] * 256 + GongNeng_HuanCun[2];
-            if( LED_PACK_id == 0 )
+            //从机执行
             {
-                memcpy( &LED_displayPackArr[0][0], &GongNeng_HuanCun[2], PACKCOL );
+                LED_PACK_id = GongNeng_HuanCun[1] * 256 + GongNeng_HuanCun[2];
+                if( LED_PACK_id == 0 )
+                {
+                    memcpy( &LED_displayPackArr[0][0], &GongNeng_HuanCun[2], PACKCOL );
+                }
+                LED_displayPackPlayer(LED_PACK_id);
             }
-            LED_displayPackPlayer(LED_PACK_id);
-
-			if(FanHui_Flag==0)
+			//返回主机
 			{
 				FaSong_HuanCun[0]=6;
 				FaSong_HuanCun[1]=IapReadByte(0x0000);
 				FaSong_HuanCun[2]=IapReadByte(0x0001);
 				ZhiLingFaSong(3);
 			}
-            break;//a5 ff ff 06 00 01 
+        break;//a5 ff ff 06 00 01 
 		case 7://编号清除
-			BianHao_QingChu[0]=0x00;
-			BianHao_QingChu[1]=0x00;
-			EEPROM_Write_Str(0x0000,BianHao_QingChu,2);
-			FaSong_HuanCun[0]=7;
-			FaSong_HuanCun[1]=IapReadByte(0x0000);
-			FaSong_HuanCun[2]=IapReadByte(0x0001);
-			ZhiLingFaSong(3);
-            break;//a5 ff ff 07 c2 41
+            //从机执行
+            {
+                BianHao_QingChu[0]=0x00;
+                BianHao_QingChu[1]=0x00;
+                EEPROM_Write_Str(0x0000,BianHao_QingChu,2);
+            }
+            //返回主机
+            {
+                FaSong_HuanCun[0]=7;
+                FaSong_HuanCun[1]=IapReadByte(0x0000);
+                FaSong_HuanCun[2]=IapReadByte(0x0001);
+                ZhiLingFaSong(3);
+            }
+        break;//a5 ff ff 07 c2 41
+        case 0x0b://检测从机在线状态
+            //返回主机
+            {
+                FaSong_HuanCun[0]=0x0b;
+                FaSong_HuanCun[1]=IapReadByte(0x0000);
+                FaSong_HuanCun[2]=IapReadByte(0x0001);
+                ZhiLingFaSong(3);
+            }
+        break;
         case 0x20://LED开关
-            PWMxx = GongNeng_HuanCun[1];
-            breath_state = GongNeng_HuanCun[2];
-            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
-            break;
+            //从机执行
+            {
+                PWMxx = GongNeng_HuanCun[1];
+                breath_state = GongNeng_HuanCun[2];
+                LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            }
+			//返回主机
+            {
+				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
+				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
+				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+                FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
+                FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
+				ZhiLingFaSong(5);
+			}
+        break;
 		case 0x21://LED亮度设定
-            PWMxx = GongNeng_HuanCun[1];
-            breath_state = GongNeng_HuanCun[2];
-            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
-            break;
+            //从机执行
+            {
+                PWMxx = GongNeng_HuanCun[1];
+                breath_state = GongNeng_HuanCun[2];
+                LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            }
+			//返回主机
+            {
+				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
+				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
+				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+                FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
+                FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
+				ZhiLingFaSong(5);
+			}
+        break;
 		case 0x22://LED循环呼吸
-            PWMxx = GongNeng_HuanCun[1];
-            breath_state = GongNeng_HuanCun[2];
-            periodBreathFlash1_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
-            waveBreathChangeFlash_start = GongNeng_HuanCun[5];
-            waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
-            waveBreathChangeFlash_now = GongNeng_HuanCun[7];
-            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
-            break;
+            //从机执行
+            {
+                PWMxx = GongNeng_HuanCun[1];
+                breath_state = GongNeng_HuanCun[2];
+                periodBreathFlash1_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
+                waveBreathChangeFlash_start = GongNeng_HuanCun[5];
+                waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
+                waveBreathChangeFlash_now = GongNeng_HuanCun[7];
+                LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            }
+			//返回主机
+            {
+				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
+				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
+				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+                FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
+                FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
+                FaSong_HuanCun[5]=GongNeng_HuanCun[3];//呼吸周期H
+                FaSong_HuanCun[6]=GongNeng_HuanCun[4];//呼吸周期L
+                FaSong_HuanCun[7]=GongNeng_HuanCun[5];//起始亮度
+                FaSong_HuanCun[8]=GongNeng_HuanCun[6];//结束亮度
+                FaSong_HuanCun[9]=GongNeng_HuanCun[7];//当前亮度
+				ZhiLingFaSong(10);
+			}
+        break;
 		case 0x23://LED循环（单次）渐变
-            PWMxx = GongNeng_HuanCun[1];
-            breath_state = GongNeng_HuanCun[2];
-            periodChangeFlash2_cntCmp    = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
-            waveBreathChangeFlash_start = GongNeng_HuanCun[5];
-            waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
-            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
-            break;
+            //从机执行
+            {
+                PWMxx = GongNeng_HuanCun[1];
+                breath_state = GongNeng_HuanCun[2];
+                periodChangeFlash2_cntCmp    = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
+                waveBreathChangeFlash_start = GongNeng_HuanCun[5];
+                waveBreathChangeFlash_end  = GongNeng_HuanCun[6];
+                LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            }
+			//返回主机
+            {
+				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
+				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
+				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+                FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
+                FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
+                FaSong_HuanCun[5]=GongNeng_HuanCun[3];//渐变周期H
+                FaSong_HuanCun[6]=GongNeng_HuanCun[4];//渐变周期L
+                FaSong_HuanCun[7]=GongNeng_HuanCun[5];//起始亮度
+                FaSong_HuanCun[8]=GongNeng_HuanCun[6];//结束亮度
+				ZhiLingFaSong(9);
+			} 
+        break;
 		case 0x24://LED循环闪烁
-            PWMxx = GongNeng_HuanCun[1];
-            breath_state = GongNeng_HuanCun[2];
-            periodBreathFlash1_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
-            periodChangeFlash2_cntCmp  = GongNeng_HuanCun[5]*256 + GongNeng_HuanCun[6];
-            waveBreathChangeFlash_start = GongNeng_HuanCun[7];
-            waveBreathChangeFlash_end  = GongNeng_HuanCun[8];
-            waveBreathChangeFlash_now = waveBreathChangeFlash_start;
-            LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
-            break;
+            //从机执行
+            {
+                PWMxx = GongNeng_HuanCun[1];
+                breath_state = GongNeng_HuanCun[2];
+                periodBreathFlash1_cntCmp = GongNeng_HuanCun[3]*256 + GongNeng_HuanCun[4];
+                periodChangeFlash2_cntCmp  = GongNeng_HuanCun[5]*256 + GongNeng_HuanCun[6];
+                waveBreathChangeFlash_start = GongNeng_HuanCun[7];
+                waveBreathChangeFlash_end  = GongNeng_HuanCun[8];
+                waveBreathChangeFlash_now = waveBreathChangeFlash_start;
+                LED_breathInit(PWMxx, breath_state, periodBreathFlash1_cntCmp, periodChangeFlash2_cntCmp, waveBreathChangeFlash_start, waveBreathChangeFlash_end,waveBreathChangeFlash_now);
+            }
+			//返回主机
+            {
+				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
+				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
+				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+                FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
+                FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
+                FaSong_HuanCun[5]=GongNeng_HuanCun[3];//频闪周期1H
+                FaSong_HuanCun[6]=GongNeng_HuanCun[4];//频闪周期1L
+                FaSong_HuanCun[7]=GongNeng_HuanCun[5];//频闪周期2H
+                FaSong_HuanCun[8]=GongNeng_HuanCun[6];//频闪周期2L
+                FaSong_HuanCun[9]=GongNeng_HuanCun[7];//起始亮度
+                FaSong_HuanCun[10]=GongNeng_HuanCun[8];//结束亮度 
+				ZhiLingFaSong(11);
+			} 
+        break;
 	}
 }
 

@@ -16,6 +16,7 @@ u32 LED_displayTime = 0;
 u16 LED_dispalyPackIndex = 0;
 u16   LED_PACK_id = 0;
 u16 LED_PACK_idArr[8] = {0x0000, PACK1, PACK2, PACK3, PACK4, PACK5, PACK6, PACK7};
+u8 StartDisplayPack_flag = 0; //开启效果包：1，开启、2，关闭
 
 
 u8 LED_displayPackArr[PACKROW][PACKCOL] = { 0 };
