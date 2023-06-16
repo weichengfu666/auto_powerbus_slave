@@ -72,3 +72,23 @@ void EEPROM_Read_Str(u16 addr,u8 dat[],u16 dat_Len)
         dat[i] = IapReadByte(addr + i);
     }
 }
+
+
+//≤‚ ‘≥Ã–Ú
+//    EEPROM_Read_Str( PACK1,(void*)LED_displayPackArr,PACKROW*PACKCOL);
+//    for(i=0;i<PACKROW;i++)
+//    {
+//        for(j=0;j<PACKCOL;j++)
+//        {
+//            SendData(LED_displayPackArr[i][j]);
+//        }
+//    }
+//    EEPROM_Write_Str(PACK1,(void*)LED_displayPack1,PACKROW*PACKCOL);
+//    EEPROM_Read_Str( PACK1,(void*)LED_displayPackArr,PACKROW*PACKCOL);
+//    for(i=0;i<PACKROW;i++)
+//    {
+//        for(j=0;j<PACKCOL;j++)
+//        {
+//            SendData(LED_displayPackArr[i][j]);
+//        }
+//    }

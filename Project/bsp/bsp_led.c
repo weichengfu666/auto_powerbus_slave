@@ -64,7 +64,7 @@ code u16 indexWaveGradChange[202] = {//呼吸和渐变共用
 const u16 IndexWaveGradChange_size = sizeof( indexWaveGradChange ) / sizeof( u16 );
 
 //呼吸灯控制全局变量
-LED_BreathTypeDef LED_BreathxxArr[24] = {0};    //PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
+LED_BreathTypeDef LED_BreathxxArr[8] = {0};    //PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
 
 /*
 *********************************************************************************************************

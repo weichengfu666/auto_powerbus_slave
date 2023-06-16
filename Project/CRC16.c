@@ -13,8 +13,8 @@ void crc16(unsigned char *ptr,unsigned int len,uchar CRC_GuangBo)
 	CRC_i=0;
 	if(CRC_GuangBo==0)
 	{
-		CRC_HuanCun[0]=IapReadByte(0x0000);
-		CRC_HuanCun[1]=IapReadByte(0x0001);
+		CRC_HuanCun[0]=Slave.assignArr[0];
+		CRC_HuanCun[1]=Slave.assignArr[1];
 	}else if(CRC_GuangBo==1)
 	{
 		CRC_HuanCun[0]=0xff;

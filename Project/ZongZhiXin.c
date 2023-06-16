@@ -7,8 +7,9 @@ char LiangDu_ChuShi=0,LiangDu_JieShu=0,LiangDu_DangQian=0;
 long LiangDu_HuanCun=0;
 uchar BianHao_QingChu[2],SouXunXuLie_Time=0,BiaoHaoFuZhi_Time=0;
 uint Time=0,Time_i=0;
-code uchar XuLieHao[5]={0x01,0x00,0x0a,0x0a,0x0a};
-u8 EEPROM_ChuShi[2] = {0x00, 0x00}; //分机赋值号
+
+
+SlaveTypeDef Slave = { 0 };
 
 //code uint LiangDuDuiZhao[101]={0,
 //	1,2,2,2,2,3,3,3,3,3,
@@ -40,7 +41,28 @@ void FenJi_Init(void)
 		GongNen_Addr_Shou[ZhuJi_Init_i]=0;
 		GongNen_Addr_Wei[ZhuJi_Init_i]=0;
 	}
-    EEPROM_Write_Str(0x0000,EEPROM_ChuShi,2);
+    //初始化从机结构体
+    {
+        //读取从机结构体到缓存
+        EEPROM_Read_Str(0x0000,(u8*)&Slave,sizeof(Slave));
+SendData(Slave.assignArr[0]);
+SendData(Slave.assignArr[1]);
+        //初始化序列号
+        Slave.serialArr[0] = 0x01;
+        Slave.serialArr[1] = 0x00;
+        Slave.serialArr[2] = 0x0a;
+        Slave.serialArr[3] = 0x0a;
+        Slave.serialArr[4] = 0x0a;
+        //未被赋值编号，则清除编号
+        if( Slave.assignArr[0] == 0xff && Slave.assignArr[1] == 0xff )
+        {
+            Slave.assignArr[0] = 0x00;
+            Slave.assignArr[1] = 0x00;
+        }
+        //写从机结构体到flash
+        EEPROM_Write_Str(0x0000,(u8*)&Slave,sizeof(Slave));   
+    }
+
     ZhiLin_ChangDu[0x01-1] = 11;
     ZhiLin_ChangDu[0x02-1] = 13;
     ZhiLin_ChangDu[0x03-1] = 6;
@@ -70,25 +92,27 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 	switch(GongNeng_HuanCun[0])
 	{
 		case 1://按位搜寻模块序列号
-			if((GongNeng_HuanCun[1]&XuLieHao[0])==0)
-				if((GongNeng_HuanCun[2]&XuLieHao[1])==0)
-					if((GongNeng_HuanCun[3]&XuLieHao[2])==0)
-						if((GongNeng_HuanCun[4]&XuLieHao[3])==0)
-							if((GongNeng_HuanCun[5]&XuLieHao[4])==0)
+			if((GongNeng_HuanCun[1]&Slave.serialArr[0])==0)
+				if((GongNeng_HuanCun[2]&Slave.serialArr[1])==0)
+					if((GongNeng_HuanCun[3]&Slave.serialArr[2])==0)
+						if((GongNeng_HuanCun[4]&Slave.serialArr[3])==0)
+							if((GongNeng_HuanCun[5]&Slave.serialArr[4])==0)
 							{
-								if((IapReadByte(0x0000)==0)&&(IapReadByte(0x0001)==0))
+								if((Slave.assignArr[0]==0)&&(Slave.assignArr[1]==0))
 								{
 									SouXunXuLie_Time=1;
 								}
 							}
         break;
 		case 2://编号赋值 a5 ff ff 02 cc 00 00 00 00 00 02 14 0c
-			if((GongNeng_HuanCun[1]==XuLieHao[0])&&(GongNeng_HuanCun[2]==XuLieHao[1])&&(GongNeng_HuanCun[3]==XuLieHao[2])&&(GongNeng_HuanCun[4]==XuLieHao[3])&&(GongNeng_HuanCun[5]==XuLieHao[4]))
+			if((GongNeng_HuanCun[1]==Slave.serialArr[0])&&(GongNeng_HuanCun[2]==Slave.serialArr[1])&&(GongNeng_HuanCun[3]==Slave.serialArr[2])&&(GongNeng_HuanCun[4]==Slave.serialArr[3])&&(GongNeng_HuanCun[5]==Slave.serialArr[4]))
 			{
-				uchar BianHao_HuanCun[2];
-				BianHao_HuanCun[0]=GongNeng_HuanCun[6];
-				BianHao_HuanCun[1]=GongNeng_HuanCun[7];
-				EEPROM_Write_Str(0x0000,BianHao_HuanCun,2);
+				Slave.assignArr[0]=GongNeng_HuanCun[6];
+				Slave.assignArr[1]=GongNeng_HuanCun[7];
+                EEPROM_Write_Str(0x0000,(u8*)&Slave,sizeof(Slave));                   //写从机结构体到flash
+        EEPROM_Read_Str(0x0000,(u8*)&Slave,sizeof(Slave));
+        SendData(Slave.assignArr[0]);
+        SendData(Slave.assignArr[1]);
 				BiaoHaoFuZhi_Time=1;
 			}
         break;//a5 ff ff 02 52 61 01 02 03 52 61 96 8a
@@ -97,8 +121,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=3;
-				FaSong_HuanCun[1]=IapReadByte(0x0000);
-				FaSong_HuanCun[2]=IapReadByte(0x0001);
+				FaSong_HuanCun[1]=Slave.assignArr[0];
+				FaSong_HuanCun[2]=Slave.assignArr[1];
 				ZhiLingFaSong(3);
 			}
         break;//a5 ff ff 03 01 40   a5 00 02 03 A1 30
@@ -106,8 +130,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=4;
-				FaSong_HuanCun[1]=IapReadByte(0x0000);
-				FaSong_HuanCun[2]=IapReadByte(0x0001);
+				FaSong_HuanCun[1]=Slave.assignArr[0];
+				FaSong_HuanCun[2]=Slave.assignArr[1];
 				ZhiLingFaSong(3);
 			}
         break;//a5 ff ff 04 c3 01
@@ -115,8 +139,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			if(FanHui_Flag==0)
 			{
 				FaSong_HuanCun[0]=5;
-				FaSong_HuanCun[1]=IapReadByte(0x0000);
-				FaSong_HuanCun[2]=IapReadByte(0x0001);
+				FaSong_HuanCun[1]=Slave.assignArr[0];
+				FaSong_HuanCun[2]=Slave.assignArr[1];
 				FaSong_HuanCun[3]=GongNeng_HuanCun[1];
 				FaSong_HuanCun[4]=GongNeng_HuanCun[2];
 				ZhiLingFaSong(5);
@@ -135,23 +159,23 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			//返回主机
 			{
 				FaSong_HuanCun[0]=6;
-				FaSong_HuanCun[1]=IapReadByte(0x0000);
-				FaSong_HuanCun[2]=IapReadByte(0x0001);
+				FaSong_HuanCun[1]=Slave.assignArr[0];
+				FaSong_HuanCun[2]=Slave.assignArr[1];
 				ZhiLingFaSong(3);
 			}
         break;//a5 ff ff 06 00 01 
 		case 7://编号清除
             //从机执行
             {
-                BianHao_QingChu[0]=0x00;
-                BianHao_QingChu[1]=0x00;
-                EEPROM_Write_Str(0x0000,BianHao_QingChu,2);
+				Slave.assignArr[0]=0x00;
+				Slave.assignArr[1]=0x00;
+                EEPROM_Write_Str(0x0000,(u8*)&Slave,sizeof(Slave));                   //写从机结构体到flash
             }
             //返回主机
             {
                 FaSong_HuanCun[0]=7;
-                FaSong_HuanCun[1]=IapReadByte(0x0000);
-                FaSong_HuanCun[2]=IapReadByte(0x0001);
+                FaSong_HuanCun[1]=Slave.assignArr[0];
+                FaSong_HuanCun[2]=Slave.assignArr[1];
                 ZhiLingFaSong(3);
             }
         break;//a5 ff ff 07 c2 41
@@ -159,8 +183,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
             //返回主机
             {
                 FaSong_HuanCun[0]=0x0b;
-                FaSong_HuanCun[1]=IapReadByte(0x0000);
-                FaSong_HuanCun[2]=IapReadByte(0x0001);
+                FaSong_HuanCun[1]=Slave.assignArr[0];
+                FaSong_HuanCun[2]=Slave.assignArr[1];
                 ZhiLingFaSong(3);
             }
         break;
@@ -174,8 +198,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			//返回主机
             {
 				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
-				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
-				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+				FaSong_HuanCun[1]=Slave.assignArr[0];//编号H
+				FaSong_HuanCun[2]=Slave.assignArr[1];//编号L
                 FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
                 FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
 				ZhiLingFaSong(5);
@@ -191,8 +215,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			//返回主机
             {
 				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
-				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
-				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+				FaSong_HuanCun[1]=Slave.assignArr[0];//编号H
+				FaSong_HuanCun[2]=Slave.assignArr[1];//编号L
                 FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
                 FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
 				ZhiLingFaSong(5);
@@ -212,8 +236,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			//返回主机
             {
 				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
-				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
-				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+				FaSong_HuanCun[1]=Slave.assignArr[0];//编号H
+				FaSong_HuanCun[2]=Slave.assignArr[1];//编号L
                 FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
                 FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
                 FaSong_HuanCun[5]=GongNeng_HuanCun[3];//呼吸周期H
@@ -237,8 +261,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			//返回主机
             {
 				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
-				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
-				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+				FaSong_HuanCun[1]=Slave.assignArr[0];//编号H
+				FaSong_HuanCun[2]=Slave.assignArr[1];//编号L
                 FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
                 FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
                 FaSong_HuanCun[5]=GongNeng_HuanCun[3];//渐变周期H
@@ -263,8 +287,8 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 			//返回主机
             {
 				FaSong_HuanCun[0]=GongNeng_HuanCun[0];//功能帧
-				FaSong_HuanCun[1]=IapReadByte(0x0000);//编号H
-				FaSong_HuanCun[2]=IapReadByte(0x0001);//编号L
+				FaSong_HuanCun[1]=Slave.assignArr[0];//编号H
+				FaSong_HuanCun[2]=Slave.assignArr[1];//编号L
                 FaSong_HuanCun[3]=GongNeng_HuanCun[1];//输出端口
                 FaSong_HuanCun[4]=GongNeng_HuanCun[2];//输出类型
                 FaSong_HuanCun[5]=GongNeng_HuanCun[3];//频闪周期1H
@@ -291,13 +315,13 @@ void ZongZhiXin(void)
 	{
 		BiaoHaoFuZhi_Time=0;
 		FaSong_HuanCun[0]=2;
-		FaSong_HuanCun[1]=IapReadByte(0x0000);
-		FaSong_HuanCun[2]=IapReadByte(0x0001);
-		FaSong_HuanCun[3]=XuLieHao[0];
-		FaSong_HuanCun[4]=XuLieHao[1];
-		FaSong_HuanCun[5]=XuLieHao[2];
-		FaSong_HuanCun[6]=XuLieHao[3];
-		FaSong_HuanCun[7]=XuLieHao[4];
+		FaSong_HuanCun[1]=Slave.assignArr[0];
+		FaSong_HuanCun[2]=Slave.assignArr[1];
+		FaSong_HuanCun[3]=Slave.serialArr[0];
+		FaSong_HuanCun[4]=Slave.serialArr[1];
+		FaSong_HuanCun[5]=Slave.serialArr[2];
+		FaSong_HuanCun[6]=Slave.serialArr[3];
+		FaSong_HuanCun[7]=Slave.serialArr[4];
 		ZhiLingFaSong(8);
 	}
 }

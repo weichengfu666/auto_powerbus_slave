@@ -11,7 +11,8 @@ sfr IAP_TRIG        = 0xC6;          //IAP命令触发寄存器*/
 
 
 //#define  IAP_OFFSET 0x2000  //STC8G1K08
-#define  IAP_OFFSET 0x8000  //STC8G2K64     留32k
+//#define  IAP_OFFSET 0x8000  //STC8G2K64     留32k: 0x8000已经写坏
+#define  IAP_OFFSET 0x9000  //STC8G2K64     留28k
 
 #define CMD_IDLE    0                //空闲模式  
 #define CMD_READ    1                //IAP字节读命令  

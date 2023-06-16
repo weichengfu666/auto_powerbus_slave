@@ -125,7 +125,7 @@ void Uart2() interrupt 8 using 1
 	{
 		S2CON=S2CON&0xfe;        //Çå³ýS2RIÎ» 
 		FenJi_ShuJuChuLi(S2BUF); 
-		if((JiHuo[1]==0xa5)&&(((JiHuo[0]==IapReadByte(0x0000))&&(S2BUF==IapReadByte(0x0001)))||((JiHuo[0]==0xff)&&(S2BUF==0xff))))
+		if((JiHuo[1]==0xa5)&&(((JiHuo[0]==Slave.assignArr[0])&&(S2BUF==Slave.assignArr[1]))||((JiHuo[0]==0xff)&&(S2BUF==0xff))))
 		{
 			for(RX_i=0;RX_i<3;RX_i++)
 			{
