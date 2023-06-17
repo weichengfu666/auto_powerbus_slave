@@ -2,14 +2,14 @@
 #define _BSP_TEST_H
 #include "main.h"
 
-#define LED1 PWM00
-#define LED2 PWM01
-#define LED3 PWM02
-#define LED4 PWM03
-#define LED5 PWM04
-#define LED6 PWM05
-#define LED7 PWM06
-#define LED8 PWM07
+#define LED2 PWM1_PORT
+#define LED3 PWM2_PORT
+#define LED4 PWM3_PORT
+#define LED5 PWM4_PORT
+#define LED6 PWM5_PORT
+#define LED7 PWM6_PORT
+#define LED8 PWM7_PORT
+#define LED1 PWM8_PORT
 
 #define FLASHADDR_START       0x000       //flash起始地址的512字节留作他用
 #define FLASHADDR_DISPLAY1  0x200       //每个效果包512字节

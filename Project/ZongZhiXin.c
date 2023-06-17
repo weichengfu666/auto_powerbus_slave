@@ -45,8 +45,6 @@ void FenJi_Init(void)
     {
         //读取从机结构体到缓存
         EEPROM_Read_Str(0x0000,(u8*)&Slave,sizeof(Slave));
-SendData(Slave.assignArr[0]);
-SendData(Slave.assignArr[1]);
         //初始化序列号
         Slave.serialArr[0] = 0x01;
         Slave.serialArr[1] = 0x00;
@@ -77,11 +75,20 @@ SendData(Slave.assignArr[1]);
     ZhiLin_ChangDu[0x22-1] = 13;
     ZhiLin_ChangDu[0x23-1] = 12;
     ZhiLin_ChangDu[0x24-1] = 14;
+    
+    LED_breathInit(PWM1_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);
+    LED_breathInit(PWM2_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);
+    LED_breathInit(PWM3_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);  
+    LED_breathInit(PWM4_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);
+    LED_breathInit(PWM5_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);
+    LED_breathInit(PWM6_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);
+    LED_breathInit(PWM7_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);  
+    LED_breathInit(PWM8_PORT, HIGH, 0x001e, 0x003c, 10, 100, 10);
 }
 void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 {	
     //LED控制参数初始化
-    u8 PWMxx = PWM00;
+    u8 PWMxx = PWM1_PORT;
     u8 breath_state = HIGH;
     u16 periodBreathFlash1_cntCmp = 0x03e8;
     u16 periodChangeFlash2_cntCmp = 0x03e8;

@@ -13,13 +13,13 @@
       <uAC6>8</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STC8G2K64S4 Series</Device>
+          <Device>STC8H8K64U Series</Device>
           <Vendor>STC</Vendor>
-          <Cpu>IRAM(0-0xFF) XRAM(0-0x07FF) IROM(0-0xFFF8) CLOCK(35000000) MODP2</Cpu>
+          <Cpu>IRAM(0-0xFF) XRAM(0-0x1FFF) IROM(0-0xFFF8) CLOCK(35000000) MODP2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"LIB\STARTUP.A51" ("Standard 8051 Startup Code")</StartupFile>
           <FlashDriverDll></FlashDriverDll>
-          <DeviceId>63332</DeviceId>
+          <DeviceId>63364</DeviceId>
           <RegisterFile>STC8.H</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
@@ -139,7 +139,7 @@
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>0</RunToMain>
+            <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
@@ -177,7 +177,7 @@
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -283,7 +283,7 @@
               <XRA>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x800</Size>
+                <Size>0x2000</Size>
               </XRA>
               <XRA512>
                 <Type>0</Type>
@@ -417,11 +417,6 @@
               <FilePath>.\driver\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>PWM15bit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\driver\PWM15bit.c</FilePath>
-            </File>
-            <File>
               <FileName>timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\driver\timer.c</FilePath>
@@ -435,6 +430,11 @@
               <FileName>EEPROM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\driver\EEPROM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\driver\PWM.C</FilePath>
             </File>
           </Files>
         </Group>

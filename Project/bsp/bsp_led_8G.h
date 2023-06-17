@@ -17,15 +17,6 @@
 
 #define DEFAULT 0xFFFF  //为默认值将不作修改，方便只填入需要修改的参数，不需要修改的参数填 DEFAULT
 
-#define PWM1_PORT     0
-#define PWM2_PORT     1
-#define PWM3_PORT     2
-#define PWM4_PORT     3
-#define PWM5_PORT     4
-#define PWM6_PORT     5
-#define PWM7_PORT     6
-#define PWM8_PORT     7
-
 typedef struct LED_Breath{
                         u16 periodBreath_cnt;                   //呼吸的周期计数标志
                         u16 periodBreathFlash1_cntCmp;            //呼吸和频闪的周期计数比较标志
@@ -71,7 +62,7 @@ void LED_breathSetState(u8 _PWMxx, u8 _breath_state);//led呼吸灯设置状态函数,mai
 void LED_breathSetPeriod(u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end);//led呼吸灯设置周期和渐变亮度函数,main函数调用
 void LED_breathTIMER4IntCallback0x( u8 _PWMxx );//led呼吸灯中断回调函数,直接配置,在定时器中断中调用
 void LED_breathGPIOConfig(u8 _PWMxx);//led呼吸灯端口GPIO配置函数,直接配置,在初始函数调用
-void LED_breathPWM15Config(void);//led呼吸灯端口PWM15配置函数,直接配置,在初始函数调用
+void LED_breathPWM15Config(u8 _PWMxx);//led呼吸灯端口PWM15配置函数,直接配置,在初始函数调用
 void LED_breathTIMER4Config(void);//led呼吸灯端口TIMER4配置函数,直接配置,在初始函数调用
 
 #endif

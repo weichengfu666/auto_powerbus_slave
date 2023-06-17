@@ -110,23 +110,14 @@ void timer3_int (void) interrupt TIMER3_VECTOR
 /********************* Timer4ÖÐ¶Ïº¯Êý************************/
 void timer4_int (void) interrupt TIMER4_VECTOR
 {	
-    LED_breathTIMER4IntCallback0x(PWM00);
-    LED_breathTIMER4IntCallback0x(PWM01);
-    LED_breathTIMER4IntCallback0x(PWM02);
-    LED_breathTIMER4IntCallback0x(PWM03);
-    LED_breathTIMER4IntCallback0x(PWM04);
-    LED_breathTIMER4IntCallback0x(PWM05);
-    LED_breathTIMER4IntCallback0x(PWM06);
-    LED_breathTIMER4IntCallback0x(PWM07);
-
-    LED_breathTIMER4IntCallback0x(PWM20);
-    LED_breathTIMER4IntCallback0x(PWM21);
-    LED_breathTIMER4IntCallback0x(PWM22);
-    LED_breathTIMER4IntCallback0x(PWM23);
-    LED_breathTIMER4IntCallback0x(PWM24);
-    LED_breathTIMER4IntCallback0x(PWM25);
-    LED_breathTIMER4IntCallback0x(PWM26);
-    LED_breathTIMER4IntCallback0x(PWM27);
+    LED_breathTIMER4IntCallback0x(PWM1_PORT);
+    LED_breathTIMER4IntCallback0x(PWM2_PORT);
+    LED_breathTIMER4IntCallback0x(PWM3_PORT);
+    LED_breathTIMER4IntCallback0x(PWM4_PORT);
+    LED_breathTIMER4IntCallback0x(PWM5_PORT);
+    LED_breathTIMER4IntCallback0x(PWM6_PORT);
+    LED_breathTIMER4IntCallback0x(PWM7_PORT);
+    LED_breathTIMER4IntCallback0x(PWM8_PORT);
 }
 
 

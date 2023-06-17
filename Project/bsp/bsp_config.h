@@ -7,6 +7,7 @@ extern u16 TIM_Value_100us;
 extern u16 TIM_Value_10us;
 extern u16 TIM_Value_1us;
 
+#if 0
 extern u16	pwm0,pwm1,pwm2;
 extern bit	B_PWM0_Dir,B_PWM1_Dir;
 
@@ -20,7 +21,7 @@ void    LED_Flash(void);
 void	GPIO_config(void);
 void	Timer_config(void);
 void	PWM15_config(void);
-
+#endif
 
 
 #endif

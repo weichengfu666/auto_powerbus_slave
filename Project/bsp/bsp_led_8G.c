@@ -66,39 +66,6 @@ const u16 IndexWaveGradChange_size = sizeof( indexWaveGradChange ) / sizeof( u16
 //呼吸灯控制全局变量
 LED_BreathTypeDef LED_BreathxxArr[8] = {0};    //PWM00~PWM07, PWM10~PWM17, PWM20~PWM27
 
-
-void PWMDuty(u8 _PWMxx, u16 _duty)
-{
-    switch( _PWMxx )
-    {
-        case 0: 
-            PWMA_Duty.PWM1_Duty = _duty;
-        break;
-        case 1: 
-            PWMA_Duty.PWM2_Duty = _duty;
-        break;
-        case 2: 
-            PWMA_Duty.PWM3_Duty = _duty;
-        break;
-        case 3: 
-            PWMA_Duty.PWM4_Duty = _duty;
-        break;
-        case 4: 
-            PWMB_Duty.PWM5_Duty = _duty;
-        break;
-        case 5: 
-            PWMB_Duty.PWM6_Duty = _duty;
-        break;
-        case 6: 
-            PWMB_Duty.PWM7_Duty = _duty;
-        break;
-        case 7: 
-            PWMB_Duty.PWM8_Duty = _duty;
-        break;
-    }
-	UpdatePwm(PWMA, &PWMA_Duty);
-    UpdatePwm(PWMB, &PWMB_Duty);
-}
 /*
 *********************************************************************************************************
 *	函 数 名: LED_breathGPIOConfig
@@ -109,132 +76,28 @@ void PWMDuty(u8 _PWMxx, u16 _duty)
 void LED_breathGPIOConfig(u8 _PWMxx)
 {
 	GPIO_InitTypeDef	GPIO_InitStructure;		//结构定义
+	GPIO_InitStructure.Pin  = 0x01 << ( _PWMxx % 8 );		//指定要初始化的IO,
 	GPIO_InitStructure.Mode = GPIO_OUT_PP;		//指定IO的输入或输出方式,GPIO_PullUp,GPIO_HighZ,GPIO_OUT_OD,GPIO_OUT_PP
-    switch( _PWMxx )
-    {
-        case 0: 
-            GPIO_InitStructure.Pin  = 0;		//指定要初始化的IO,P60
-            GPIO_Inilize(GPIO_P6,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 1: 
-            GPIO_InitStructure.Pin  = 2;		//指定要初始化的IO,P62
-            GPIO_Inilize(GPIO_P6,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 2: 
-            GPIO_InitStructure.Pin  = 4;		//指定要初始化的IO,P64
-            GPIO_Inilize(GPIO_P6,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 3: 
-            GPIO_InitStructure.Pin  = 6;		//指定要初始化的IO,P66
-            GPIO_Inilize(GPIO_P6,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 4: 
-            GPIO_InitStructure.Pin  = 4;		//指定要初始化的IO,P74
-            GPIO_Inilize(GPIO_P7,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 5: 
-            GPIO_InitStructure.Pin  = 5;		//指定要初始化的IO,P75
-            GPIO_Inilize(GPIO_P7,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 6: 
-            GPIO_InitStructure.Pin  = 6;		//指定要初始化的IO,P76
-            GPIO_Inilize(GPIO_P7,&GPIO_InitStructure);	//初始化IO口
-        break;
-        case 7: 
-            GPIO_InitStructure.Pin  = 7;		//指定要初始化的IO,P77
-            GPIO_Inilize(GPIO_P7,&GPIO_InitStructure);	//初始化IO口
-        break;
-    }
+	GPIO_Inilize(_PWMxx/8,&GPIO_InitStructure);	//初始化IO口
 }
 /*
 *********************************************************************************************************
-*	函 数 名: LED_breathPWM15Config_PWMxx
+*	函 数 名: LED_breathPWM15Config
 *	功能说明: led呼吸灯端口PWM15配置函数
 *	返 回 值: void
 *********************************************************************************************************
 */
-void LED_breathPWM15Config(void)
+void LED_breathPWM15Config(u8 _PWMxx)
 {
-	PWMx_InitDefine		PWMx_InitStructure;
-    //PWMA1~4
-   { 
-        PWMA_Duty.PWM1_Duty = 1024;
-        PWMA_Duty.PWM2_Duty = 1024;
-        PWMA_Duty.PWM3_Duty = 1024;
-        PWMA_Duty.PWM4_Duty = 1024;
-        
-        PWMx_InitStructure.PWM1_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-        PWMx_InitStructure.PWM2_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-        PWMx_InitStructure.PWM3_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-        PWMx_InitStructure.PWM4_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-
-        PWMx_InitStructure.PWM1_SetPriority  = Priority_0;			//指定中断优先级(低到高) Priority_0,Priority_1,Priority_2,Priority_3
-        PWMx_InitStructure.PWM2_SetPriority  = Priority_0;			//指定中断优先级(低到高) Priority_0,Priority_1,Priority_2,Priority_3
-        PWMx_InitStructure.PWM3_SetPriority  = Priority_0;			//指定中断优先级(低到高) Priority_0,Priority_1,Priority_2,Priority_3
-        PWMx_InitStructure.PWM4_SetPriority  = Priority_0;			//指定中断优先级(低到高) Priority_0,Priority_1,Priority_2,Priority_3
-        
-        PWMx_InitStructure.PWM_Period   = 1023;							//周期时间,   0~65535
-        PWMx_InitStructure.PWM1_Duty    = PWMA_Duty.PWM1_Duty;	//PWM1占空比时间, 0~Period
-        PWMx_InitStructure.PWM2_Duty    = PWMA_Duty.PWM2_Duty;	//PWM2占空比时间, 0~Period
-        PWMx_InitStructure.PWM3_Duty    = PWMA_Duty.PWM3_Duty;	//PWM3占空比时间, 0~Period
-        PWMx_InitStructure.PWM4_Duty    = PWMA_Duty.PWM4_Duty;	//PWM4占空比时间, 0~Period
-        PWMx_InitStructure.PWM_DeadTime = 0;								//死区发生器设置, 0~255
-        
-        PWMx_InitStructure.PWM_EnoSelect   = ENO1P | ENO1N | ENO2P | ENO2N | ENO3P | ENO3N | ENO4P | ENO4N;	//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
-        PWMx_InitStructure.PWM_PS_SW       = PWM1_SW_P60_P61| PWM2_SW_P62_P63 | PWM3_SW_P64_P65 | PWM4_SW_P66_P67;	//切换端口,		PWM1_SW_P10_P11,PWM1_SW_P20_P21,PWM1_SW_P60_P61
-                                                                                                                //						PWM2_SW_P12_P13,PWM2_SW_P22_P23,PWM2_SW_P62_P63
-                                                                                                                //						PWM3_SW_P14_P15,PWM3_SW_P24_P25,PWM3_SW_P64_P65
-                                                                                                                //						PWM4_SW_P16_P17,PWM4_SW_P26_P27,PWM4_SW_P66_P67,PWM4_SW_P34_P33
-
-        PWMx_InitStructure.PWM_CC1Enable   = ENABLE;				//开启PWM1P输入捕获/比较输出,  ENABLE,DISABLE
-    //	PWMx_InitStructure.PWM_CC1NEnable  = ENABLE;				//开启PWM1N输入捕获/比较输出,  ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CC2Enable   = ENABLE;				//开启PWM2P输入捕获/比较输出,  ENABLE,DISABLE
-    //	PWMx_InitStructure.PWM_CC2NEnable  = ENABLE;				//开启PWM2N输入捕获/比较输出,  ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CC3Enable   = ENABLE;				//开启PWM3P输入捕获/比较输出,  ENABLE,DISABLE
-    //	PWMx_InitStructure.PWM_CC3NEnable  = ENABLE;				//开启PWM3N输入捕获/比较输出,  ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CC4Enable   = ENABLE;				//开启PWM4P输入捕获/比较输出,  ENABLE,DISABLE
-    //	PWMx_InitStructure.PWM_CC4NEnable  = ENABLE;				//开启PWM4N输入捕获/比较输出,  ENABLE,DISABLE
-        
-        PWMx_InitStructure.PWM_MainOutEnable= ENABLE;				//主输出使能, ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CEN_Enable   = ENABLE;				//使能计数器, ENABLE,DISABLE
-        PWM_Configuration(PWMA, &PWMx_InitStructure);				//初始化PWM,  PWMA,PWMB
-    }
-   //PWMB5~8
-    {
-        PWMB_Duty.PWM5_Duty = 1024;
-        PWMB_Duty.PWM6_Duty = 1024;
-        PWMB_Duty.PWM7_Duty = 1024;
-        PWMB_Duty.PWM8_Duty = 1024;
-        
-        PWMx_InitStructure.PWM5_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-        PWMx_InitStructure.PWM6_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-        PWMx_InitStructure.PWM7_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-        PWMx_InitStructure.PWM8_Mode    =	CCMRn_PWM_MODE1;	//模式,		CCMRn_FREEZE,CCMRn_MATCH_VALID,CCMRn_MATCH_INVALID,CCMRn_ROLLOVER,CCMRn_FORCE_INVALID,CCMRn_FORCE_VALID,CCMRn_PWM_MODE1,CCMRn_PWM_MODE2
-
-        PWMx_InitStructure.PWM5_SetPriority  = Priority_0;			//指定中断优先级(低到高) Priority_0,Priority_1,Priority_2,Priority_3
-        
-        PWMx_InitStructure.PWM_Period   = 1023;							//周期时间,   0~65535
-        PWMx_InitStructure.PWM5_Duty    = PWMB_Duty.PWM5_Duty;	//PWM5占空比时间, 0~Period
-        PWMx_InitStructure.PWM6_Duty    = PWMB_Duty.PWM6_Duty;	//PWM6占空比时间, 0~Period
-        PWMx_InitStructure.PWM7_Duty    = PWMB_Duty.PWM7_Duty;	//PWM7占空比时间, 0~Period
-        PWMx_InitStructure.PWM8_Duty    = PWMB_Duty.PWM8_Duty;	//PWM8占空比时间, 0~Period
-        PWMx_InitStructure.PWM_DeadTime = 0;								//死区发生器设置, 0~255
-        
-        PWMx_InitStructure.PWM_EnoSelect   = ENO5P | ENO6P | ENO7P | ENO8P;	//输出通道选择,	ENO1P,ENO1N,ENO2P,ENO2N,ENO3P,ENO3N,ENO4P,ENO4N / ENO5P,ENO6P,ENO7P,ENO8P
-        PWMx_InitStructure.PWM_PS_SW       = PWM5_SW_P74| PWM6_SW_P75 | PWM7_SW_P76 | PWM8_SW_P77;	//切换端口,		PWM5_SW_P20,PWM5_SW_P17,PWM5_SW_P00,PWM5_SW_P74
-                                                                                                                //						PWM6_SW_P21,PWM6_SW_P54,PWM6_SW_P01,PWM6_SW_P75
-                                                                                                                //						PWM7_SW_P22,PWM7_SW_P33,PWM7_SW_P02,PWM7_SW_P76
-                                                                                                                //						PWM8_SW_P23,PWM8_SW_P34,PWM8_SW_P03,PWM8_SW_P77
-
-        PWMx_InitStructure.PWM_CC5Enable   = ENABLE;				//开启PWM5P输入捕获/比较输出,  ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CC6Enable   = ENABLE;				//开启PWM6P输入捕获/比较输出,  ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CC7Enable   = ENABLE;				//开启PWM7P输入捕获/比较输出,  ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CC8Enable   = ENABLE;				//开启PWM8P输入捕获/比较输出,  ENABLE,DISABLE
-        
-        PWMx_InitStructure.PWM_MainOutEnable= ENABLE;				//主输出使能, ENABLE,DISABLE
-        PWMx_InitStructure.PWM_CEN_Enable   = ENABLE;				//使能计数器, ENABLE,DISABLE
-        PWM_Configuration(PWMB, &PWMx_InitStructure);				//初始化PWM,  PWMA,PWMB
-    }
+    PWM15_InitTypeDef		PWM15_InitStructure;
+	PWM15_InitStructure.PWM_Enable    = ENABLE;		//PWM使能,  ENABLE, DISABLE
+	PWM15_InitStructure.PWM_Period    = 0x400;		//PWM周期 PWM_Period_100us,  0~0x7fff
+	PWM15_InitStructure.PWM_Clock_Sel = PWMn_CLK_SYS;		//时钟源选择,  PWMn_CLK_SYS, PWMn_CLK_TM2
+	PWM15_InitStructure.PWM_Clock_PS  = 0;				//系统时钟分频参数(PS+1分频),  0~15
+	PWM15_InitStructure.PWM_Counter   = ENABLE;		//计数器使能,  ENABLE, DISABLE
+	PWM15_Init(_PWMxx/8,&PWM15_InitStructure);  //PWM初始化（已修复bug）
+    PWMLevelSet(_PWMxx,DISABLE,ENABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
+    PWMChannelCtrl(_PWMxx,ENABLE,0,DISABLE,DISABLE,DISABLE);	//PWM_ID, 输出使能, 初始电平, PWM中断, 第二个触发点中断, 第一触发点中断
 }
 /*
 *********************************************************************************************************
@@ -282,7 +145,7 @@ void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp
     }
  
     LED_breathGPIOConfig(_PWMxx);                    //led呼吸灯端口GPIO配置函数
-    LED_breathPWM15Config();                //led呼吸灯端口PWM15配置函数
+    LED_breathPWM15Config(_PWMxx);                //led呼吸灯端口PWM15配置函数
     LED_breathTIMER4Config();                             //led呼吸灯端口TIMER4配置函数
     LED_breathSetPeriod(_PWMxx, _breath_state, _periodBreathFlash1_cntCmp, _periodChangeFlash2_cntCmp, _waveBreathChangeFlash_start, _waveBreathChangeFlash_end); //设置周期计数比较值
     LED_breathSetState(_PWMxx, _breath_state);   //设置状态
@@ -424,16 +287,14 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
     if( _LED_Breathxx->breath_enable == ENABLE )//控制呼吸
     {
         _LED_Breathxx->periodBreath_cnt++;
-//        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
+        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
         if( _LED_Breathxx->waveBreath_index == 0 || _LED_Breathxx->waveBreath_index == IndexWaveBreath_size - 1 )//根据PWM表修改定时器的比较寄存器值
         {
-//            PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
-            PWMDuty(_PWMxx, 1024);
+            PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
         }
         else
         {
-//            PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveBreath_index]);
-            PWMDuty(_PWMxx, 1024 - indexWaveBreath[_LED_Breathxx->waveBreath_index]);
+            PWM15Duty(_PWMxx,0,indexWaveBreath[_LED_Breathxx->waveBreath_index]);
         }
         //每个PWM表中的每个元素使用 period_cntCmp 次
         if(_LED_Breathxx->periodBreath_cnt > _LED_Breathxx->periodBreathFlash1_cntCmp)				 				
@@ -453,16 +314,14 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
     else if( _LED_Breathxx->gradChange_enable == ENABLE )//控制渐变
     {
         _LED_Breathxx->periodGradChange_cnt++;
-//        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
+        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
         if( _LED_Breathxx->waveChangeFlash_index == 0 || _LED_Breathxx->waveChangeFlash_index == IndexWaveGradChange_size - 1 )//根据PWM表修改定时器的比较寄存器值
         {
-//            PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
-            PWMDuty(_PWMxx, 1024);
+            PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
         }
         else
         {
-//            PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);	
-            PWMDuty(_PWMxx, 1024 - indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
+            PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);	
         }
         //每个PWM表中的每个元素使用 period_cntCmp 次
         if(_LED_Breathxx->periodGradChange_cnt > _LED_Breathxx->periodChangeFlash2_cntCmp)				 				
@@ -489,16 +348,14 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
         _LED_Breathxx->periodFlash_cnt++;
         if( _LED_Breathxx->waveChangeFlash_index == _LED_Breathxx->waveBreathChangeFlash_start)
         {
-//            PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
+            PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
             if( _LED_Breathxx->waveChangeFlash_index == 0 || _LED_Breathxx->waveChangeFlash_index == IndexWaveGradChange_size - 1 )//根据PWM表修改定时器的比较寄存器值
             {
-//                PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
-                PWMDuty(_PWMxx, 1024);
+                PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
             }
             else
             {
-//                PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
-                PWMDuty(_PWMxx, 1024 - indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
+                PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
             }
             if(_LED_Breathxx->periodFlash_cnt >= _LED_Breathxx->periodBreathFlash1_cntCmp) //频闪计数周期到，翻转频闪电平
             {
@@ -507,16 +364,14 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
         }
         else if( _LED_Breathxx->waveChangeFlash_index == _LED_Breathxx->waveBreathChangeFlash_end)
         {
-//            PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
+            PWMLevelSet(_PWMxx,DISABLE,DISABLE);	//PWM_ID, 强制输出低电平, 强制输出高电平
             if( _LED_Breathxx->waveChangeFlash_index == 0 || _LED_Breathxx->waveChangeFlash_index == IndexWaveGradChange_size - 1 )//根据PWM表修改定时器的比较寄存器值
             {
-//                PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
-                PWMDuty(_PWMxx, 1024);
+                PWM15Duty(_PWMxx, 0x401, 0x0);	    //输出高电平
             }
             else
             {
-//                PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
-                PWMDuty(_PWMxx, 1024 - indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
+                PWM15Duty(_PWMxx,0,indexWaveGradChange[_LED_Breathxx->waveChangeFlash_index]);
             }
             if(_LED_Breathxx->periodFlash_cnt >= _LED_Breathxx->periodChangeFlash2_cntCmp) //频闪计数周期到，翻转频闪电平
             {
@@ -527,22 +382,18 @@ void LED_breathTIMER4IntCallback0x( u8 _PWMxx )
     }
     else//控制引脚高低电平
     {
-//        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	  //PWM_ID, 强制输出低电平, 强制输出高电平
+        PWMLevelSet(_PWMxx,DISABLE,DISABLE);	  //PWM_ID, 强制输出低电平, 强制输出高电平
         if(_LED_Breathxx->pin_level > LOW && _LED_Breathxx->pin_level < HIGH)
         {
-//            PWM15Duty( _PWMxx, 0x0, _LED_Breathxx->pin_level  );	    //PWM周期0x400 == 1024, 占空比设置.
-//            PWMDuty(_PWMxx, _LED_Breathxx->pin_level);
-            PWMDuty(_PWMxx, 1024 - indexWaveGradChange[_LED_Breathxx->pin_level]);
+            PWM15Duty( _PWMxx, 0x0, _LED_Breathxx->pin_level  );	    //PWM周期0x400 == 1024, 占空比设置.
         }
         else if(_LED_Breathxx->pin_level == LOW)
         {
-//            PWM15Duty(_PWMxx, 0x0, 0x401);	    //PWM周期, 占空比设置.
-            PWMDuty(_PWMxx, 0);
+            PWM15Duty(_PWMxx, 0x0, 0x401);	    //PWM周期, 占空比设置.
         }
         else if(_LED_Breathxx->pin_level == HIGH)
         {
-//            PWM15Duty(_PWMxx, 0x401, 0x0);	    //PWM周期, 占空比设置.
-            PWMDuty(_PWMxx, 1024);
+            PWM15Duty(_PWMxx, 0x401, 0x0);	    //PWM周期, 占空比设置.
         }
     }
 }

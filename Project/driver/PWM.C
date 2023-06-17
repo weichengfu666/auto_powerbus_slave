@@ -12,6 +12,9 @@
 
 #include "PWM.h"
 
+PWMx_Duty PWMA_Duty;    //设置PWM1~PWM4占空比时间
+PWMx_Duty PWMB_Duty;    //设置PWM5~PWM8占空比时间
+
 u8 PWM_Configuration(u8 PWM, PWMx_InitDefine *PWMx)
 {
 	if(PWM == PWMA)

@@ -22,7 +22,6 @@
 #include	"config.h"
 #include	"GPIO.h"
 #include	"delay.h"
-#include	"PWM15bit.h"
 #include	"timer.h"
 #include    "eeprom.h"
 #include    "bsp_config.h"
