@@ -177,7 +177,7 @@
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2></Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -465,6 +465,21 @@
               <FileName>bsp_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\bsp\bsp_test.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>doc</GroupName>
+          <Files>
+            <File>
+              <FileName>未解决问题.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\doc\未解决问题.txt</FilePath>
+            </File>
+            <File>
+              <FileName>已解决问题.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\doc\已解决问题.txt</FilePath>
             </File>
           </Files>
         </Group>

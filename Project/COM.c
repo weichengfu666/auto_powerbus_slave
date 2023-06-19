@@ -16,6 +16,7 @@ void InitUART(void)	//9600 24MHZ
   SCON = 0x50;
   TMOD = 0x00;
   AUXR = 0x40;			//0100 0001
+//  P_SW1 = 0x40; //RXD_2/P3.6, TXD_2/P3.7
 	TL1 = 0x8F;				//
 	TH1 = 0xFD;				//
   busy = 0;

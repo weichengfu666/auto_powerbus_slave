@@ -117,9 +117,9 @@ void ZhiLinZhiXing(uchar *GongNeng_HuanCun,uchar FanHui_Flag)
 				Slave.assignArr[0]=GongNeng_HuanCun[6];
 				Slave.assignArr[1]=GongNeng_HuanCun[7];
                 EEPROM_Write_Str(0x0000,(u8*)&Slave,sizeof(Slave));                   //写从机结构体到flash
-        EEPROM_Read_Str(0x0000,(u8*)&Slave,sizeof(Slave));
-        SendData(Slave.assignArr[0]);
-        SendData(Slave.assignArr[1]);
+//        EEPROM_Read_Str(0x0000,(u8*)&Slave,sizeof(Slave));
+//        SendData(Slave.assignArr[0]);
+//        SendData(Slave.assignArr[1]);
 				BiaoHaoFuZhi_Time=1;
 			}
         break;//a5 ff ff 02 52 61 01 02 03 52 61 96 8a

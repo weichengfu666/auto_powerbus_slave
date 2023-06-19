@@ -84,7 +84,7 @@ code u8 LED_displayPack2[PACKROW][PACKCOL] = {
                                                         
 void LED_displayPackStore( u8 _PACK_id )
 {
-    EEPROM_Write_Str(_PACK_id,(void*)LED_displayPackArr,PACKROW*PACKCOL);
+    writeFlashStr(_PACK_id,(void*)LED_displayPackArr,PACKROW*PACKCOL);
 }
     
 void LED_displayPackPlayer( u8 _PACK_id )

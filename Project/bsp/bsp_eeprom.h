@@ -11,8 +11,8 @@ sfr IAP_TRIG        = 0xC6;          //IAP命令触发寄存器*/
 
 
 //#define  IAP_OFFSET 0x2000  //STC8G1K08
-//#define  IAP_OFFSET 0x8000  //STC8G2K64     留32k: 0x8000已经写坏
-#define  IAP_OFFSET 0x9000  //STC8G2K64     留28k
+//#define  IAP_OFFSET 0x8000  //STC8H8K64U     留32k
+#define  IAP_OFFSET 0x9000  //STC8H8K64U     留28k
 
 #define CMD_IDLE    0                //空闲模式  
 #define CMD_READ    1                //IAP字节读命令  
@@ -36,5 +36,8 @@ void IapProgramByte(u16 addr,u8 dat); //写一个字节数据到ISP/IAP/EEPROM区域
 void IapEraseSector(u16 addr);			 //扇区擦除
 void EEPROM_Write_Str(u16 addr,u8 dat[],u16 dat_Len);
 void EEPROM_Read_Str(u16 addr,u8 dat[],u16 dat_Len);
+//建议使用以下函数读写EEPROM
+u8 writeFlashStr ( u32 _ulFlashAddr, u8 *_ucpSrc, u32 _ulSize ); /* 读取页到缓存，修改内容，再写回flash  */
+void readFlashStr (u16 addr,u8 dat[],u16 dat_Len);
 
 #endif

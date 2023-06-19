@@ -133,37 +133,37 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>PWMA_Duty,0x0A</ItemText>
+          <ItemText>page_index,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>LED_BreathxxArr[0],0x0A</ItemText>
+          <ItemText>ulFlashAddr_pageStart,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>LED_BreathxxArr[1],0x0A</ItemText>
+          <ItemText>ulFlashAddr_pageOffset,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>LED_BreathxxArr[2],0x0A</ItemText>
+          <ItemText>ulFlashAddr_pageNum,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>LED_BreathxxArr[3],0x0A</ItemText>
+          <ItemText>ulFlashAddr_pageNum_Bytes,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>indexWaveGradChange[_LED_Breathxx-&gt;pin_level],0x0A</ItemText>
+          <ItemText>flash512_PageArr_p</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>_LED_Breathxx-&gt;pin_level,0x0A</ItemText>
+          <ItemText>Flash512_PageArr,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -422,6 +422,38 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\bsp\bsp_test.c</PathWithFileName>
       <FilenameWithoutPath>bsp_test.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>doc</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>4</GroupNumber>
+      <FileNumber>17</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\doc\未解决问题.txt</PathWithFileName>
+      <FilenameWithoutPath>未解决问题.txt</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>4</GroupNumber>
+      <FileNumber>18</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\doc\已解决问题.txt</PathWithFileName>
+      <FilenameWithoutPath>已解决问题.txt</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

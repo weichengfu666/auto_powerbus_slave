@@ -23,6 +23,11 @@ void Timer0Init(void)		//1毫秒@24.000MHz
 } 																				
 void IO_Init(void)
 {
+	GPIO_InitTypeDef	GPIO_InitStructure;		//结构定义
+	GPIO_InitStructure.Mode = GPIO_OUT_PP;		//指定IO的输入或输出方式,GPIO_PullUp,GPIO_HighZ,GPIO_OUT_OD,GPIO_OUT_PP
+    GPIO_InitStructure.Pin  = 0;		//指定要初始化的IO,P60
+    GPIO_Inilize(GPIO_P6,&GPIO_InitStructure);	//初始化IO口
+    
 	P1M0 = 0x02; 
 	P1M1 = 0xfd; 
 /*********************************************************************************/
