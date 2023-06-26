@@ -110,14 +110,26 @@ void timer3_int (void) interrupt TIMER3_VECTOR
 /********************* Timer4ÖÐ¶Ïº¯Êý************************/
 void timer4_int (void) interrupt TIMER4_VECTOR
 {	
-    LED_breathTIMER4IntCallback0x(PWM1_PORT);
-    LED_breathTIMER4IntCallback0x(PWM2_PORT);
-    LED_breathTIMER4IntCallback0x(PWM3_PORT);
-    LED_breathTIMER4IntCallback0x(PWM4_PORT);
-    LED_breathTIMER4IntCallback0x(PWM5_PORT);
-    LED_breathTIMER4IntCallback0x(PWM6_PORT);
-    LED_breathTIMER4IntCallback0x(PWM7_PORT);
-    LED_breathTIMER4IntCallback0x(PWM8_PORT);
+#ifdef LED
+    LED_breathTIMER4IntCallback0x(LED1_PORT);
+    LED_breathTIMER4IntCallback0x(LED2_PORT);
+    LED_breathTIMER4IntCallback0x(LED3_PORT);
+    LED_breathTIMER4IntCallback0x(LED4_PORT);
+    LED_breathTIMER4IntCallback0x(LED5_PORT);
+    LED_breathTIMER4IntCallback0x(LED6_PORT);
+    LED_breathTIMER4IntCallback0x(LED7_PORT);
+    LED_breathTIMER4IntCallback0x(LED8_PORT);
+#endif
+#ifdef LOCK
+    LOCK_TIMER4IntCallback0x(LOCK1_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK2_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK3_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK4_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK5_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK6_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK7_PORT);
+    LOCK_TIMER4IntCallback0x(LOCK8_PORT);
+#endif
 }
 
 

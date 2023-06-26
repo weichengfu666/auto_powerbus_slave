@@ -466,6 +466,11 @@
               <FileType>1</FileType>
               <FilePath>.\bsp\bsp_test.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_lock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\bsp\bsp_lock.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -480,6 +485,11 @@
               <FileName>已解决问题.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\doc\已解决问题.txt</FilePath>
+            </File>
+            <File>
+              <FileName>配置.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\doc\配置.txt</FilePath>
             </File>
           </Files>
         </Group>

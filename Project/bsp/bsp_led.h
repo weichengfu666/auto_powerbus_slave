@@ -8,23 +8,24 @@
 #define LED_FLASH  0
 
 //LED状态值：低电平，高电平，呼吸，渐变，频闪
-#define LOW  0
-#define HIGH 101
-#define BREATH 102
-#define GRADCHANGE_ONCE  103  //单次渐变
+#define OPEN  1 //通电
+#define CLOSE 2 //断电
+#define LIGHT  3 //亮度设定
+#define GRADCHANGE_ONCE  4  //单次渐变
 #define GRADCHANGE_CYCLE 104  //循环渐变
-#define FLASH 105
+#define BREATH 5  //循环呼吸
+#define FLASH  6     //循环闪烁
 
 #define DEFAULT 0xFFFF  //为默认值将不作修改，方便只填入需要修改的参数，不需要修改的参数填 DEFAULT
 
-#define PWM1_PORT     0
-#define PWM2_PORT     1
-#define PWM3_PORT     2
-#define PWM4_PORT     3
-#define PWM5_PORT     4
-#define PWM6_PORT     5
-#define PWM7_PORT     6
-#define PWM8_PORT     7
+#define LED1_PORT     1
+#define LED2_PORT     2
+#define LED3_PORT     3
+#define LED4_PORT     4
+#define LED5_PORT     5
+#define LED6_PORT     6
+#define LED7_PORT     7
+#define LED8_PORT     8
 
 typedef struct LED_Breath{
                         u16 periodBreath_cnt;                   //呼吸的周期计数标志
@@ -41,9 +42,9 @@ typedef struct LED_Breath{
                         u16 periodFlash_cnt;                      //频闪的周期计数标志
                         u8  flash_enable;                            //频闪开关： ENABLE 为开， DISABLE 为关
 
-                        u8  pin_level;                                  //呼吸开关，用于控制输出引脚高低电平，精度1%，取值：LOW,0~100,HIGH
-                        u8 waveBreathChangeFlash_start;            //呼吸渐变频闪PWM起始亮度，0~100：由最暗到最亮，101~201：由最亮到最暗，可以随意组合
-                        u8 waveBreathChangeFlash_end;             //呼吸渐变频闪PWM结束亮度
+                        u8  light;                                  //呼吸开关，用于控制输出引脚高低电平，精度1%，取值：LOW,0~100,HIGH
+                        u8 waveBreathChangeFlash_low;            //呼吸渐变频闪PWM起始亮度，0~100：由最暗到最亮，101~201：由最亮到最暗，可以随意组合
+                        u8 waveBreathChangeFlash_high;             //呼吸渐变频闪PWM结束亮度
 }LED_BreathTypeDef;
 
 typedef struct LED_Flash{
@@ -66,9 +67,10 @@ extern const u16 IndexWaveGradChange_size;//渐变PWM表有100个元素
 extern LED_BreathTypeDef LED_BreathxxArr[];//呼吸灯控制全局变量数组
 
 /* 呼吸灯函数 */  //输出口接led 负极, vcc接led 正极
-void LED_breathInit( u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end, u8 _waveBreathChangeFlash_now );//呼吸灯初始化函数,main函数调用
-void LED_breathSetState(u8 _PWMxx, u8 _breath_state);//led呼吸灯设置状态函数,main函数调用
-void LED_breathSetPeriod(u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_start, u8 _waveBreathChangeFlash_end);//led呼吸灯设置周期和渐变亮度函数,main函数调用
+void PWMDuty(u8 _PWMxx, u16 _duty);
+void LED_breathInit( u8 _PWMxx, u8 _breath_state, u8 _light, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_low, u8 _waveBreathChangeFlash_high, u8 _waveBreathChangeFlash_start );//呼吸灯初始化函数,main函数调用
+void LED_breathSetState(u8 _PWMxx, u8 _breath_state, u8 _light);//led呼吸灯设置状态函数,main函数调用
+void LED_breathSetPeriod(u8 _PWMxx, u8 _breath_state, u16 _periodBreathFlash1_cntCmp, u16 _periodChangeFlash2_cntCmp, u8 _waveBreathChangeFlash_low, u8 _waveBreathChangeFlash_high);//led呼吸灯设置周期和渐变亮度函数,main函数调用
 void LED_breathTIMER4IntCallback0x( u8 _PWMxx );//led呼吸灯中断回调函数,直接配置,在定时器中断中调用
 void LED_breathGPIOConfig(u8 _PWMxx);//led呼吸灯端口GPIO配置函数,直接配置,在初始函数调用
 void LED_breathPWM15Config(void);//led呼吸灯端口PWM15配置函数,直接配置,在初始函数调用

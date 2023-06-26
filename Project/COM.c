@@ -6,7 +6,7 @@ uchar JiHuo[2]={0,0},ZhuJiJieShou_HuanCun[3][20];
 uchar ZhuJiJieShou_HuanCun_i[3]={0,0,0};
 uchar FaSong_HuanCun[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},GuangBo_Flag[3]={0,0,0};
 bit busy,busy2;	 
-uchar ZhiLin_ChangDu[0x30]={11,13,6,6,8,8,6,0,0,0};
+uchar ZhiLin_ChangDu[0xFF]={11,13,6,6,8,8,6,0,0,0};
 
 /*----------------------------
     UART1初始化
@@ -70,7 +70,7 @@ void FenJi_ShuJuChuLi2(void)
     uchar FenJi_ShuJuChuLi2_i,FenJi_ShuJuChuLi2_j;
 	for(FenJi_ShuJuChuLi2_i=0;FenJi_ShuJuChuLi2_i<3;FenJi_ShuJuChuLi2_i++)
 	{
-		if((ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]==0)&&(ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi2_i]>1))
+		if((ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]==0)&&(ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi2_i]>1)) //功能帧为0，则清空
 		{
 			for(FenJi_ShuJuChuLi2_j=0;FenJi_ShuJuChuLi2_j<20;FenJi_ShuJuChuLi2_j++)
 			{
@@ -78,7 +78,7 @@ void FenJi_ShuJuChuLi2(void)
 			}
 			ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi2_i]=0;
 		}
-		if(ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi2_i]>ZhiLin_ChangDu[ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]-1]-3)
+		if(ZhuJiJieShou_HuanCun_i[FenJi_ShuJuChuLi2_i]>ZhiLin_ChangDu[ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]-1]-3) //接收到完整指令
 		{
 			crc16(ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i],ZhiLin_ChangDu[ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]-1]-5,GuangBo_Flag[FenJi_ShuJuChuLi2_i]);			
 			if(ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][ZhiLin_ChangDu[ZhuJiJieShou_HuanCun[FenJi_ShuJuChuLi2_i][0]-1]-5]==CRC_H)

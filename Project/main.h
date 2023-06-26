@@ -29,5 +29,6 @@
 #include    "bsp_display.h"
 #include    "bsp_eeprom.h"
 #include    "bsp_test.h"
+#include    "bsp_lock.h"
 
 #endif

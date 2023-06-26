@@ -9,10 +9,7 @@ sfr IAP_CMD         = 0xC5;          //IAP命令寄存器
 sfr IAP_TRIG        = 0xC6;          //IAP命令触发寄存器 
 sfr IAP_TRIG        = 0xC6;          //IAP命令触发寄存器*/
 
-
-//#define  IAP_OFFSET 0x2000  //STC8G1K08
-//#define  IAP_OFFSET 0x8000  //STC8H8K64U     留32k
-#define  IAP_OFFSET 0x9000  //STC8H8K64U     留28k
+#define  IAP_OFFSET 0x8000  //STC8H8K64U     留32k
 
 #define CMD_IDLE    0                //空闲模式  
 #define CMD_READ    1                //IAP字节读命令  
