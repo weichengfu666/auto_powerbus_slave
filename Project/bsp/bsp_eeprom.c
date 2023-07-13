@@ -1,6 +1,6 @@
 #include "main.h"		 
 
-#define PAGE_SIZE 4     //flash缓存页，最多一次写入 4 缓存页到flash
+#define PAGE_SIZE 2     //flash缓存页，最多一次写入 4 缓存页到flash
 
 u16 EEPROM_Write_n_i=0;
 uchar EEPROM_Write_HuanCun[32];

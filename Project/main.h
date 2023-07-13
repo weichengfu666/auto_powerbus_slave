@@ -11,6 +11,7 @@
 #define ulong unsigned long //ËÄ×Ö½Ú
 #endif
 #include "intrins.h"
+#include "stdio.h"
 #include "STC8xxxx.H"
 #include "string.h"
 #include "math.h"
@@ -30,5 +31,6 @@
 #include    "bsp_eeprom.h"
 #include    "bsp_test.h"
 #include    "bsp_lock.h"
+#include    "bsp_decode.h"
 
 #endif

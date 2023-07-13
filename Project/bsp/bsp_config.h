@@ -3,8 +3,9 @@
 #include "main.h"
 
 /* ÅäÖÃÄ£¿é¿ª¹Ø */
-#define LED
-//#define LOCK
+#define LOCK  //0x0100
+//#define LED     //0x0101
+
 
 extern u16 TIM_Value_1ms;  
 extern u16 TIM_Value_100us;
